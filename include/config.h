@@ -10,6 +10,7 @@
 #define ANEDYA_ENABLE_DEVICE_LOGS
 #define ANEDYA_ENABLE_COMMANDS
 #define ANEDYA_ENABLE_VALUESTORE
+#define ANEDYA_ENABLE_DEBUG_OUTPUT
 
 /*
 This setting defines the method which is used to connect with the platform.
