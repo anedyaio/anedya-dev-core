@@ -11,6 +11,8 @@ extern "C" {
 
 typedef int anedya_err_t;
 
+const char *anedya_err_to_name(anedya_err_t code);
+
 #define ANEDYA_OK 0
 #define ANEDYA_ERR -1
 

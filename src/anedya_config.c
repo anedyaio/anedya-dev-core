@@ -60,4 +60,5 @@ anedya_err_t anedya_set_timeout(anedya_config_t *config, size_t timeout) {
         return ANEDYA_ERR;
     }
     config->timeout = timeout;
+    return ANEDYA_OK;
 }

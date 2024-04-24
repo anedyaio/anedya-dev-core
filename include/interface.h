@@ -16,6 +16,8 @@ See config.h for tuning operations of this library.
 */
 
 #include "config.h"
+#include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,6 +27,19 @@ extern "C" {
 /** @brief: Defines an interface for providing output to serial console or any other terminal on the hardware*/
 void anedya_interface_std_out(const char* str);
 #endif
+
+/** @brief: An interface used internally to sleep the code for milliseconds provided.*/
+void anedya_interface_sleep_ms(size_t milli);
+
+/** @brief: An interface used internally to get the current system time in milliseconds.*/
+uint64_t anedya_interface_get_time_ms();
+
+/** @brief: An interface used internally to set the current system time in milliseconds.*/
+void anedya_interface_set_time_ms(uint64_t time);
+
+//==================================================================================
+// CONNECTION MANAGEMENT
+//==================================================================================
 
 #ifdef __cplusplus
 }
