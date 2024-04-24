@@ -21,7 +21,10 @@ See config.h for tuning operations of this library.
 extern "C" {
 #endif
 
-
+#ifdef ANEDYA_ENABLE_DEBUG_OUTPUT
+/** @brief: Defines an interface for providing output to serial console or any other terminal on the hardware*/
+void anedya_interface_std_out(const char* str);
+#endif
 
 #ifdef __cplusplus
 }

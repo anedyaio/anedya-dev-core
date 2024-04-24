@@ -15,7 +15,8 @@ typedef int anedya_err_t;
 #define ANEDYA_ERR -1
 
 /* Anedya Error Definitions and Constants */
-
+#define ANEDYA_INVALID_REGION 1
+#define ANEDYA_INVALID_DEVICE_ID 2
 
 
 

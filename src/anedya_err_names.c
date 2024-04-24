@@ -20,6 +20,8 @@ typedef struct {
 static const anedya_err_msg_t anedya_err_msg_table[] = {
     ERR_TBL_IT(ANEDYA_OK),
     ERR_TBL_IT(ANEDYA_ERR),
+    ERR_TBL_IT(ANEDYA_INVALID_REGION),
+    ERR_TBL_IT(ANEDYA_INVALID_DEVICE_ID)
 };
 
 #endif

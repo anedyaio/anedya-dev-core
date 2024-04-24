@@ -13,7 +13,11 @@ extern "C" {
 
 // Common datatypes
 
-typedef char anedya_device_id_t[16];
+typedef unsigned char anedya_device_id_t[16];
+
+typedef struct {
+
+} anedya_command_t;
 
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
     /** @brief: On connect callback, which is called when connection is established with the MQTT Server */
@@ -27,9 +31,9 @@ typedef char anedya_device_id_t[16];
 typedef struct {
     size_t timeout;
     char *region;
-    char *connection_key;
+    const char *connection_key;
     unsigned int connection_key_len;
-    anedya_device_id_t device_id;
+    anedya_device_id_t *device_id;
     #ifdef ANEDYA_CONNECTION_METHOD_MQTT
         anedya_on_connect_cb_t on_connect;
         anedya_on_disconnect_cb_t on_disconnect;
@@ -40,14 +44,6 @@ typedef struct {
 typedef struct {
     anedya_config_t *config;
 } anedya_client_t;
-
-typedef struct {
-
-} anedya_command_t;
-
-typedef struct {
-
-} anedya_command_t;
 
 #ifdef __cplusplus
 }
