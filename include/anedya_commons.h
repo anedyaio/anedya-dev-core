@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 // Region Codes
-#define ANEDYA_AP_IN_1 "ap-in-1"
+#define ANEDYA_REGION_AP_IN_1 "ap-in-1"
 
 // Common datatypes
 
@@ -44,6 +44,8 @@ typedef struct {
 typedef struct {
     anedya_config_t *config;
 } anedya_client_t;
+
+
 
 #ifdef __cplusplus
 }

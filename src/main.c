@@ -27,7 +27,7 @@ void main() {
         printf("%s\n", anedya_err_to_name(err));
         return;
     }
-    err = anedya_set_region(&config, ANEDYA_AP_IN_1);
+    err = anedya_set_region(&config, ANEDYA_REGION_AP_IN_1);
     if (err != ANEDYA_OK) {
         printf("%s\n", anedya_err_to_name(err));
         return;

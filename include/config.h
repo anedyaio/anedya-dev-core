@@ -11,6 +11,8 @@
 #define ANEDYA_ENABLE_COMMANDS
 #define ANEDYA_ENABLE_VALUESTORE
 //#define ANEDYA_ENABLE_DEBUG_OUTPUT
+#define ANEDYA_TLS_ENABLE_ECC
+//#define ANEDYA_TLS_ENABLE_RSA
 
 /*
 This setting defines the method which is used to connect with the platform.
@@ -45,6 +47,10 @@ Depending on the method selected, corresponding implementation of APIs will be i
     #error "ANEDYA_ENABLE_STATIC_ALLOCATION and ANEDYA_ENABLE_DYNAMIC_ALLOCATION cannot be defined at the same time"
 #endif
 
+#if defined(ANEDYA_TLS_ENABLE_ECC) && defined(ANEDYA_TLS_ENABLE_RSA)
+    #error "ANEDYA_TLS_ENABLE_ECC and ANEDYA_TLS_ENABLE_RSA cannot be defined at the same time"
+#endif
+
 // Define different buffer sizes(in bytes) to preallocate memeory to carry out different transactions
 // Please provide sufficient buffer according to your requirement.
 // Lower buffer will not be able to include multiple datapoint submission in single request
@@ -58,5 +64,3 @@ Depending on the method selected, corresponding implementation of APIs will be i
         #define ANEDYA_MAX_LOG_BATCH 10 // Maximum Number of logs that can be submitted in a single request
     #endif
 #endif
-
-

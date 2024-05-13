@@ -47,8 +47,8 @@ anedya_err_t anedya_init_config(anedya_config_t *config, anedya_device_id_t *dev
 }
 
 anedya_err_t anedya_set_region(anedya_config_t *config, const char *region) {
-    if(strcmp(region, ANEDYA_AP_IN_1) == 0) {
-        config->region = ANEDYA_AP_IN_1;
+    if(strcmp(region, ANEDYA_REGION_AP_IN_1) == 0) {
+        config->region = ANEDYA_REGION_AP_IN_1;
     } else {
         return ANEDYA_INVALID_REGION;
     }
