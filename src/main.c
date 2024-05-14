@@ -42,4 +42,13 @@ void main() {
     printf("Config initialized\n");
     printf("Connection Key: %s Length: %d\n", config.connection_key, config.connection_key_len);
     printf("Timeout:  %ld\n", config.timeout);
+
+    err = anedya_init_client(&config, &client);
+    if (err != ANEDYA_OK) {
+        printf("%s\n", anedya_err_to_name(err));
+        return;
+    }
+
+    printf("Client initialized\n");
+    printf("Client region: %s", client.config->region);
 }

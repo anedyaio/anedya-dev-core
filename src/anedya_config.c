@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stddef.h>
 #include "anedya.h"
 #include "anedya_err.h"
 #include "anedya_config.h"
@@ -17,16 +18,16 @@
 anedya_err_t anedya_parse_device_id(const char deviceID[37], anedya_device_id_t devID) {
     static const int8_t si[16] = {0,2,4,6,9,11,14,16,19,21,24,26,28,30,32,34};
     if(strnlen(deviceID, 37) != 36) {
-        return ANEDYA_INVALID_DEVICE_ID;
+        return ANEDYA_ERR_INVALID_DEVICE_ID;
     }
     for(int i = 0; i < 36; i++) {
         if(i == 8 || i == 13 || i == 18 || i == 23) {
             if(deviceID[i] != '-') {
-                return ANEDYA_INVALID_DEVICE_ID;
+                return ANEDYA_ERR_INVALID_DEVICE_ID;
             }
         } else {
             if(parsehex(deviceID[i]) == -1) {
-                return ANEDYA_INVALID_DEVICE_ID;
+                return ANEDYA_ERR_INVALID_DEVICE_ID;
             }
         }
     }
@@ -43,6 +44,17 @@ anedya_err_t anedya_init_config(anedya_config_t *config, anedya_device_id_t *dev
     config->connection_key = connection_key;
     config->connection_key_len = strlen(connection_key);
     config->device_id = devId;
+    char uuid_str[37];
+    sprintf(uuid_str, "%02hhx%02hhx%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
+            devId[0], devId[1],
+            *devId[2], *devId[3],
+            *devId[4], *devId[5],
+            *devId[6], *devId[7],
+            *devId[8], *devId[9],
+            *devId[10], *devId[11],
+            *devId[12], *devId[13],
+            *devId[14], *devId[15]);
+    printf("UUID: %s\n", uuid_str);
     return ANEDYA_OK;
 }
 
@@ -50,7 +62,7 @@ anedya_err_t anedya_set_region(anedya_config_t *config, const char *region) {
     if(strcmp(region, ANEDYA_REGION_AP_IN_1) == 0) {
         config->region = ANEDYA_REGION_AP_IN_1;
     } else {
-        return ANEDYA_INVALID_REGION;
+        return ANEDYA_ERR_INVALID_REGION;
     }
     return ANEDYA_OK;
 }
@@ -62,3 +74,29 @@ anedya_err_t anedya_set_timeout(anedya_config_t *config, size_t timeout) {
     config->timeout = timeout;
     return ANEDYA_OK;
 }
+
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
+anedya_err_t anedya_set_connect_cb(anedya_config_t *config, anedya_on_connect_cb_t on_connect) {
+    if(on_connect == NULL) {
+        return ANEDYA_ERR;
+    }
+    config->on_connect = on_connect;
+    return ANEDYA_OK;
+}
+
+anedya_err_t anedya_set_disconnect_cb(anedya_config_t *config, anedya_on_disconnect_cb_t on_disconnect) {
+    if(on_disconnect == NULL) {
+        return ANEDYA_ERR;
+    }
+    config->on_disconnect = on_disconnect;
+    return ANEDYA_OK;
+}
+
+anedya_err_t anedya_set_command_cb(anedya_config_t *config, anedya_on_command_cb_t on_command) {
+    if(on_command == NULL) {
+        return ANEDYA_ERR;
+    }
+    config->on_command = on_command;
+    return ANEDYA_OK;
+}
+#endif

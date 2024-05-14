@@ -11,7 +11,7 @@
 #define ANEDYA_ENABLE_COMMANDS
 #define ANEDYA_ENABLE_VALUESTORE
 //#define ANEDYA_ENABLE_DEBUG_OUTPUT
-#define ANEDYA_TLS_ENABLE_ECC
+#define ANEDYA_TLS_ENABLE_ECC       // Using ECC can save roughly 400 bytes of static storage
 //#define ANEDYA_TLS_ENABLE_RSA
 
 /*

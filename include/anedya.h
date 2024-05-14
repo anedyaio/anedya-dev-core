@@ -4,6 +4,8 @@
 #include "anedya_device_logs.h"
 #include "anedya_operations.h"
 #include "config.h"
+#include "interface.h"
+#include "anedya_err.h"
 // Anedya Core Library
 #ifdef __cplusplus
 extern "C" {

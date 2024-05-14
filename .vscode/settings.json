@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "anedya_err.h": "c"
+        "anedya_err.h": "c",
+        "anedya.h": "c"
     }
 }
