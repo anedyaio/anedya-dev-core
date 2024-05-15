@@ -27,17 +27,19 @@ anedya_err_t anedya_connect(anedya_client_t *client) {
     anedya_err_t err;
     char url[256];
     char uuid_str[37];
-    snprintf(url, 256, "device.%s.anedya.io", client->config->region);
+    for(int i = 0; i < 37; i++) {
+        uuid_str[i] = 0;
+    }
     sprintf(uuid_str, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-            *client->config->device_id[0], *client->config->device_id[1],
-            *client->config->device_id[2], *client->config->device_id[3],
-            *client->config->device_id[4], *client->config->device_id[5],
-            *client->config->device_id[6], *client->config->device_id[7],
-            *client->config->device_id[8], *client->config->device_id[9],
-            *client->config->device_id[10], *client->config->device_id[11],
-            *client->config->device_id[12], *client->config->device_id[13],
-            *client->config->device_id[14], *client->config->device_id[15]);
-    printf("UUID: %s\n", uuid_str);
+            client->config->device_id[0], client->config->device_id[1],
+            client->config->device_id[2], client->config->device_id[3],
+            client->config->device_id[4], client->config->device_id[5],
+            client->config->device_id[6], client->config->device_id[7],
+            client->config->device_id[8], client->config->device_id[9],
+            client->config->device_id[10], client->config->device_id[11],
+            client->config->device_id[12], client->config->device_id[13],
+            client->config->device_id[14], client->config->device_id[15]);
+    printf("\nUUID: %s\n", uuid_str);
     /*err = anedya_interface_mqtt_connect(
         client,
         url,

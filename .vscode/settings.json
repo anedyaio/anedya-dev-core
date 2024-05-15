@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "anedya_err.h": "c",
-        "anedya.h": "c"
+        "anedya.h": "c",
+        "time.h": "c",
+        "config.h": "c"
     }
 }

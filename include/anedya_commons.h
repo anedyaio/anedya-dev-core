@@ -37,7 +37,7 @@ typedef struct {
     const char *region;
     const char *connection_key;
     unsigned int connection_key_len;
-    anedya_device_id_t *device_id;
+    anedya_device_id_t device_id;
     // MQTT Callbacks
     #ifdef ANEDYA_CONNECTION_METHOD_MQTT
         anedya_on_connect_cb_t on_connect;
@@ -69,6 +69,9 @@ typedef struct {
         #ifdef ANEDYA_ENABLE_DEVICE_LOGS
             char *log_buffer;
         #endif
+    #endif
+    #ifdef ANEDYA_CONNECTION_METHOD_MQTT
+        anedya_mqtt_client_handle_t mqtt_client;
     #endif
 } anedya_client_t;
 

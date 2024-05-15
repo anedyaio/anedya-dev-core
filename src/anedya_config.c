@@ -40,20 +40,23 @@ anedya_err_t anedya_parse_device_id(const char deviceID[37], anedya_device_id_t 
 }
 
 
-anedya_err_t anedya_init_config(anedya_config_t *config, anedya_device_id_t *devId, const char *connection_key) {
+anedya_err_t anedya_init_config(anedya_config_t *config, anedya_device_id_t devId, const char *connection_key) {
     config->connection_key = connection_key;
     config->connection_key_len = strlen(connection_key);
-    config->device_id = devId;
+    memcpy(config->device_id, devId, sizeof(anedya_device_id_t));
     char uuid_str[37];
-    sprintf(uuid_str, "%02hhx%02hhx%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx-%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx",
+    for(int i = 0; i < 37; i++) {
+        uuid_str[i] = 0;
+    }
+    sprintf(uuid_str, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
             devId[0], devId[1],
-            *devId[2], *devId[3],
-            *devId[4], *devId[5],
-            *devId[6], *devId[7],
-            *devId[8], *devId[9],
-            *devId[10], *devId[11],
-            *devId[12], *devId[13],
-            *devId[14], *devId[15]);
+            devId[2], devId[3],
+            devId[4], devId[5],
+            devId[6], devId[7],
+            devId[8], devId[9],
+            devId[10], devId[11],
+            devId[12], devId[13],
+            devId[14], devId[15]);
     printf("UUID: %s\n", uuid_str);
     return ANEDYA_OK;
 }

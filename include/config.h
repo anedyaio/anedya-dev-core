@@ -36,8 +36,8 @@ Depending on the method selected, corresponding implementation of APIs will be i
 // If you are using dynamic memory allocation, please define ANEDYA_ENABLE_DYNAMIC_ALLOCATION.
 //
 // For static allocation of memory, additional values are required to be defined.
-#define ANEDYA_ENABLE_STATIC_ALLOCATION
-//#define ANEDYA_ENABLE_DYNAMIC_ALLOCATION
+//#define ANEDYA_ENABLE_STATIC_ALLOCATION
+#define ANEDYA_ENABLE_DYNAMIC_ALLOCATION
 
 #if defined(ANEDYA_CONNECTION_METHOD_MQTT) && defined(ANEDYA_CONNECTION_METHOD_HTTP)
     #error "ANEDYA_CONNECTION_METHOD_MQTT and ANEDYA_CONNECTION_METHOD_HTTP cannot be defined at the same time"

@@ -22,7 +22,7 @@ void main() {
     }
     printf("\n");
 
-    err = anedya_init_config(&config, &devid, conneciton_key);
+    err = anedya_init_config(&config, devid, conneciton_key);
     if (err != ANEDYA_OK) {
         printf("%s\n", anedya_err_to_name(err));
         return;
@@ -51,4 +51,10 @@ void main() {
 
     printf("Client initialized\n");
     printf("Client region: %s", client.config->region);
+
+    err = anedya_connect(&client);
+    if (err != ANEDYA_OK) {
+        printf("%s\n", anedya_err_to_name(err));
+        return;
+    }
 }
