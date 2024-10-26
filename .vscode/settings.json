@@ -3,6 +3,7 @@
         "anedya_err.h": "c",
         "anedya.h": "c",
         "time.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "anedya_commons.h": "c"
     }
 }

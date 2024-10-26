@@ -3,7 +3,7 @@
 * (c) 2024, Anedya Systems Private Limited
 */
 
-#include "config.h"
+#include "anedya_sdk_config.h"
 #include "anedya_err.h"
 #include <stddef.h>
 
@@ -24,7 +24,12 @@ static const anedya_err_msg_t anedya_err_msg_table[] = {
     ERR_TBL_IT(ANEDYA_ERR_INVALID_DEVICE_ID),
     ERR_TBL_IT(ANEDYA_ERR_INVALID_CREDENTIALS),
     ERR_TBL_IT(ANEDYA_ERR_MQTT_RATE_LIMIT_EXCEEDED),
-    ERR_TBL_IT(ANEDYA_ERR_NO_MEMORY)
+    ERR_TBL_IT(ANEDYA_ERR_NO_MEMORY),
+    ERR_TBL_IT(ANEDYA_ERR_NOT_CONNECTED),
+    ERR_TBL_IT(ANEDYA_ERR_LOCK_FAILED),
+    ERR_TBL_IT(ANEDYA_ERR_RX_BUFFER_OVERFLOW),
+    ERR_TBL_IT(ANEDYA_ERR_INVALID_UUID),
+    ERR_TBL_IT(ANEDYA_ERR_MAX_TXN_EXCEEDED),
 };
 
 #endif
