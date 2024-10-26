@@ -6,7 +6,7 @@ available at runtime. This library requires interfaces to be implemented by the 
 
 For example, an Embedded system might not have alloc(), malloc(), or free() defined, where it needs to work with statically allocated space.
 
-See anedya_config.h for tuning operations of this library.
+See anedya_sdk_config.h for tuning operations of this library.
 
 ## anedya-dev-core Architecture
 
@@ -31,5 +31,7 @@ In general, the platform layer is responsible for handling:
 - MQTT or HTTP connection state
 - IPv4 or IPv6 stack
 - Connection through some Modems
+
+Interface implementations for some platforms are available in interface folder, which can be used directly or as an reference to start a port to new hardware.
 
 The core library does not have any other dependency apart from the platform layer.
