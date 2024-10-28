@@ -81,7 +81,20 @@ extern "C"
          *          directly to the fields of `config`.
          */
         anedya_err_t anedya_config_init(anedya_config_t *config, anedya_device_id_t devId, const char *connection_key, size_t connection_key_len);
-
+        
+        /**
+         * @brief: Set the region of the device.
+         *
+         * The function sets the region of the device.
+         *
+         * @param[in] config    Pointer to the `anedya_config_t` structure.
+         * @param[in] region    Pointer to the region string.(Possible values: ANEDYA_REGION_AP_IN_1)
+         * @retval - `ANEDYA_OK` if successful.
+         * @retval - `ANEDYA_ERR_INVALID_REGION` if the region is not supported.
+         * @note        - This function sets the region of the device.
+         * @note        - Please refer to the documentation for the supported regions (https://docs.anedya.io/device/#region).
+         * @warning     - Ensure to set the region before connecting.
+         */
         anedya_err_t anedya_config_set_region(anedya_config_t *config, const char *region);
 
         /** @brief: TODO */
