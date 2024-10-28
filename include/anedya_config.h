@@ -112,7 +112,7 @@ extern "C"
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
 
         /**
-         * @brief Sets the connection callback for the Anedya configuration.
+         * @brief Sets the MQTT connection callback for the Anedya configuration.
          *
          * This function assigns a user-defined callback function to be called
          * when the client successfully connects to the Anedya platform via
@@ -136,9 +136,53 @@ extern "C"
          *       otherwise, an error will be returned.
          */
         anedya_err_t anedya_config_set_connect_cb(anedya_config_t *config, anedya_on_connect_cb_t on_connect, anedya_context_t ctx);
-        /** @brief: TODO */
+        /**
+         * @brief Sets the disconnection callback for the Anedya configuration.
+         *
+         * This function assigns a user-defined callback function to be called
+         * when the client disconnects from the Anedya platform. It also allows
+         * the user to set a context that will be passed to the callback.
+         *
+         * @param[in] config Pointer to the `anedya_config_t` structure in which
+         *                   the disconnection callback will be set.
+         * @param[in] on_disconnect Pointer to the callback function to be invoked
+         *                          upon disconnection. If this is NULL, the
+         *                          function returns an error.
+         * @param[in] ctx User-defined context that will be passed to the
+         *                disconnection callback function. This can be used to
+         *                store additional information needed during the callback.
+         *
+         * @retval - `ANEDYA_OK` on successful setting of the disconnection callback.
+         * @retval - `ANEDYA_ERR` if the provided callback function is NULL.
+         *
+         * @note Ensure that the `config` structure is properly initialized before
+         *       calling this function. The callback function should not be NULL;
+         *       otherwise, an error will be returned.
+         */
         anedya_err_t anedya_config_set_disconnect_cb(anedya_config_t *config, anedya_on_disconnect_cb_t on_disconnect, anedya_context_t ctx);
-        /** @brief: TODO */
+        /**
+         * @brief Registers an event handler for the Anedya configuration.
+         *
+         * This function assigns a user-defined event handler that will be called
+         * to process various events from the Anedya platform. It also allows the
+         * user to set a context that will be passed to the event handler.
+         *
+         * @param[in] config Pointer to the `anedya_config_t` structure in which
+         *                   the event handler will be registered.
+         * @param[in] event_handler Pointer to the event handler function that will
+         *                         be invoked when an event occurs. If this is
+         *                         NULL, the function returns an error.
+         * @param[in] ctx User-defined context that will be passed to the
+         *                event handler function. This can be used to store
+         *                additional information needed during event handling.
+         *
+         * @retval ANEDYA_OK on successful registration of the event handler.
+         * @retval ANEDYA_ERR if the provided event handler function is NULL.
+         *
+         * @note Ensure that the `config` structure is properly initialized before
+         *       calling this function. The event handler function should not be
+         *       NULL; otherwise, an error will be returned.
+         */
         anedya_err_t anedya_config_register_event_handler(anedya_config_t *config, anedya_event_handler_t event_handler, anedya_context_t ctx);
 #endif
 
