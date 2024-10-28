@@ -99,9 +99,9 @@ extern "C"
 
         /**
          * @brief: Set the timeout to wait for the response from the device.
-         * 
+         *
          * The function sets the timeout to wait for the response from the Connectivity Server.
-         * 
+         *
          * @param[out] config    Pointer to the `anedya_config_t` structure.
          * @param[in] timeout   Timeout in seconds.
          * @retval - `ANEDYA_OK` if successful.
@@ -110,7 +110,31 @@ extern "C"
         anedya_err_t anedya_config_set_timeout(anedya_config_t *config, size_t timeout_sec);
 
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
-        /** @brief: TODO */
+
+        /**
+         * @brief Sets the connection callback for the Anedya configuration.
+         *
+         * This function assigns a user-defined callback function to be called
+         * when the client successfully connects to the Anedya platform via
+         * MQTT. It also allows the user to set a context that will be passed
+         * to the callback.
+         *
+         * @param[in] config Pointer to the `anedya_config_t` structure in which
+         *                   the connection callback will be set.
+         * @param[in] on_connect Pointer to the callback function to be invoked
+         *                       upon successful connection. If this is NULL,
+         *                       the function returns an error.
+         * @param[in] ctx User-defined context that will be passed to the
+         *                connection callback function. This can be used to
+         *                store additional information needed during the callback.
+         *
+         * @retval - `ANEDYA_OK` on successful setting of the connection callback.
+         * @retval - `ANEDYA_ERR` if the provided callback function is NULL.
+         *
+         * @note Ensure that the `config` structure is properly initialized before
+         *       calling this function. The callback function should not be NULL;
+         *       otherwise, an error will be returned.
+         */
         anedya_err_t anedya_config_set_connect_cb(anedya_config_t *config, anedya_on_connect_cb_t on_connect, anedya_context_t ctx);
         /** @brief: TODO */
         anedya_err_t anedya_config_set_disconnect_cb(anedya_config_t *config, anedya_on_disconnect_cb_t on_disconnect, anedya_context_t ctx);
