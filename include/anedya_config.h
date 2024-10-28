@@ -81,13 +81,13 @@ extern "C"
          *          directly to the fields of `config`.
          */
         anedya_err_t anedya_config_init(anedya_config_t *config, anedya_device_id_t devId, const char *connection_key, size_t connection_key_len);
-        
+
         /**
          * @brief: Set the region of the device.
          *
          * The function sets the region of the device.
          *
-         * @param[in] config    Pointer to the `anedya_config_t` structure.
+         * @param[out] config    Pointer to the `anedya_config_t` structure.
          * @param[in] region    Pointer to the region string.(Possible values: ANEDYA_REGION_AP_IN_1)
          * @retval - `ANEDYA_OK` if successful.
          * @retval - `ANEDYA_ERR_INVALID_REGION` if the region is not supported.
@@ -97,7 +97,16 @@ extern "C"
          */
         anedya_err_t anedya_config_set_region(anedya_config_t *config, const char *region);
 
-        /** @brief: TODO */
+        /**
+         * @brief: Set the timeout to wait for the response from the device.
+         * 
+         * The function sets the timeout to wait for the response from the Connectivity Server.
+         * 
+         * @param[out] config    Pointer to the `anedya_config_t` structure.
+         * @param[in] timeout   Timeout in seconds.
+         * @retval - `ANEDYA_OK` if successful.
+         * @note     - Ensure to set the timeout before connecting.
+         */
         anedya_err_t anedya_config_set_timeout(anedya_config_t *config, size_t timeout_sec);
 
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
