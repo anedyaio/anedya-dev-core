@@ -40,7 +40,7 @@ extern "C"
                 char *_message_topics[3]
 #endif
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
-                anedya_mqtt_client_handle_t mqtt_client;
+                    anedya_mqtt_client_handle_t mqtt_client;
                 anedya_message_handler_t _message_handler;
                 anedya_on_connect_handler_t _anedya_on_connect_handler;
                 anedya_on_disconnect_handler_t _anedya_on_disconnect_handler;
@@ -51,13 +51,52 @@ extern "C"
                 anedya_txn_store_t txn_store;
         };
 
-        /** @brief: TODO */
+        /**
+         * @brief Initialize the Anedya client with the provided configuration.
+         *
+         * This function initializes an Anedya client instance using the specified configuration parameters.
+         * It allocates required buffers and sets up MQTT connection parameters if enabled.
+         *
+         * @param[in] config Pointer to the `anedya_config_t` structure containing configuration parameters.
+         * @param[out] client Pointer to the `anedya_client_t` structure to initialize.
+         *
+         * @retval - `ANEDYA_OK` if the client initialization is successful.
+         * @retval - `ANEDYA_ERR_NO_MEMORY` if memory allocation for any buffer fails.
+         * @retval Other error codes based on initialization failures.
+         *
+         * @warning Ensure that the configuration is properly populated before calling this function.
+         */
         anedya_err_t anedya_client_init(anedya_config_t *config, anedya_client_t *client);
 
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
-        /** @brief: Initiate connection with the Anedya platform.*/
+        /**
+         * @brief Connect the Anedya client to the server.
+         *
+         * This function establishes a connection to the server using the client's MQTT client instance.
+         *
+         * @param[in] client Pointer to the `anedya_client_t` structure representing the client to connect.
+         *
+         * @retval - `ANEDYA_OK` if the connection is successful.
+         * @retval Error code if the connection fails, as returned by `_anedya_interface_mqtt_connect`.
+         *
+         * @note Ensure that the client is properly initialized before attempting to connect.
+         * @warning This function should be called only after initializing the client.
+         */
         anedya_err_t anedya_client_connect(anedya_client_t *client);
-        /** @brief: TODO */
+
+        /**
+         * @brief Disconnect the Anedya client from the server.
+         *
+         * This function disconnects the Anedya client from the server.
+         *
+         * @param[in] client Pointer to the `anedya_client_t` structure representing the client to disconnect.
+         *
+         * @retval - `ANEDYA_OK` if the disconnection is successful.
+         * @retval - Error code if the disconnection fails, as returned by `_anedya_interface_mqtt_disconnect`.
+         *
+         * @note Ensure that the client is connected before calling this function.
+         */
+
         anedya_err_t anedya_client_disconnect(anedya_client_t *client);
         /** @brief: TODO */
         anedya_err_t anedya_client_destroy(anedya_client_t *client);
