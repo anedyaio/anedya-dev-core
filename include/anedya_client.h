@@ -115,7 +115,6 @@ extern "C"
         void _anedya_message_handler(anedya_client_t *cl, char *topic, int topic_len, char *payload, int payload_len);
         void _anedya_on_connect_handler(anedya_client_t *client);
         void _anedya_on_disconnect_handler(anedya_client_t *client);
-
 #endif
 
         anedya_err_t _anedya_txn_store_init(anedya_txn_store_t *store);

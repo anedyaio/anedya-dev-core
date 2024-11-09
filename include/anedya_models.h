@@ -77,7 +77,7 @@ extern "C"
          * @note Ensure the input string follows the correct UUID format for successful parsing.
          */
         anedya_err_t _anedya_uuid_parse(const char *in, anedya_uuid_t uuid);
-        
+
         /**
          * @brief Convert a binary UUID to a string format.
          *
