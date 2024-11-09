@@ -55,7 +55,7 @@ extern "C"
          * @brief Initialize the Anedya client with the provided configuration.
          *
          * This function initializes an Anedya client instance using the specified configuration parameters.
-         * It allocates required buffers and sets up MQTT connection parameters if enabled.
+         * It allocates required buffers and sets up MQTT connection if `ANEDYA_CONNECTION_METHOD_MQTT` is defined.
          *
          * @param[in] config Pointer to the `anedya_config_t` structure containing configuration parameters.
          * @param[out] client Pointer to the `anedya_client_t` structure to initialize.
