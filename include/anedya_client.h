@@ -96,9 +96,20 @@ extern "C"
          *
          * @note Ensure that the client is connected before calling this function.
          */
-
         anedya_err_t anedya_client_disconnect(anedya_client_t *client);
-        /** @brief: TODO */
+
+        /**
+         * @brief Destroy the Anedya client instance.
+         *
+         * This function releases resources associated with the Anedya client's MQTT client instance.
+         *
+         * @param[in] client Pointer to the `anedya_client_t` structure representing the client to destroy.
+         *
+         * @retval - `ANEDYA_OK` if the client instance is successfully destroyed.
+         * @retval - Error code if destruction fails, as returned by `_anedya_interface_mqtt_destroy`.
+         *
+         * @note Ensure that the client is disconnected before calling this function.
+         */
         anedya_err_t anedya_client_destroy(anedya_client_t *client);
 
         void _anedya_message_handler(anedya_client_t *cl, char *topic, int topic_len, char *payload, int payload_len);
