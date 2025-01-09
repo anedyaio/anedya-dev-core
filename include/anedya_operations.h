@@ -17,7 +17,8 @@
 extern "C"
 {
 #endif
-
+     /** @defgroup anedyaoperationsandrequests Anedya Operations and Requests 
+      * @{ */
     // Anedya Operations and requests
     /**
      * @brief Send a device bind request to the server.
@@ -169,6 +170,7 @@ extern "C"
      *          Ensure the appropriate allocation macros are defined.
      */
     anedya_err_t anedya_op_valuestore_set_bool(anedya_client_t *client, anedya_txn_t *txn, const char *key, bool value);
+    /** @} */
 
     // Reponse handlers
     void _anedya_device_handle_generic_resp(anedya_client_t *client, anedya_txn_t *txn);

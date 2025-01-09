@@ -62,34 +62,8 @@ extern "C"
                 size_t binding_secret_len;
         } anedya_req_bind_device_t;
 
-        /**
-         * @brief Parse a UUID string into a binary format.
-         *
-         * This function parses a UUID string into the `anedya_uuid_t` binary format. The input string must follow
-         * the standard UUID format (e.g., "123e4567-e89b-12d3-a456-426614174000").
-         *
-         * @param[in] in Pointer to the null-terminated string containing the UUID to parse.
-         * @param[out] uuid Parsed output UUID in binary format as an `anedya_uuid_t`.
-         *
-         * @retval - `ANEDYA_OK` if the UUID is parsed successfully.
-         * @retval - `ANEDYA_ERR_INVALID_UUID` if the input string is not in a valid UUID format.
-         *
-         * @note Ensure the input string follows the correct UUID format for successful parsing.
-         */
-        anedya_err_t _anedya_uuid_parse(const char *in, anedya_uuid_t uuid);
 
-        /**
-         * @brief Convert a binary UUID to a string format.
-         *
-         * This function converts a binary UUID (`anedya_uuid_t`) to its string representation in the
-         * standard UUID format (e.g., "123e4567-e89b-12d3-a456-426614174000").
-         *
-         * @param[in] uuid Binary UUID input as an `anedya_uuid_t`.
-         * @param[out] out Pointer to the output buffer for the UUID string. Must be at least 37 bytes long
-         *                 to accommodate the null-terminated string format.
-         *
-         * @note Ensure that the output buffer is adequately sized to store the resulting UUID string.
-         */
+        anedya_err_t _anedya_uuid_parse(const char *in, anedya_uuid_t uuid);
         void _anedya_uuid_marshal(const anedya_uuid_t uuid, char *out);
 
 #ifdef __cplusplus

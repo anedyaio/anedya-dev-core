@@ -39,6 +39,8 @@ extern "C"
         anedya_err_t _op_err;
         anedya_response_t response;
     };
+    /** @defgroup anedytxn Anedya Transaction 
+     * @{  */
 
     /**
      * @brief Register a callback function for a transaction.
@@ -62,6 +64,8 @@ extern "C"
     anedya_err_t _anedya_txn_register(anedya_client_t *client, anedya_txn_t *txn);
     anedya_err_t _anedya_txn_complete(anedya_client_t *client, anedya_txn_t *txn);
     anedya_txn_desc_t _anedya_txn_get_desc(anedya_txn_t *txn);
+
+    /** @} */
 
 #ifdef __cplusplus
 }

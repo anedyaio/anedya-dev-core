@@ -14,7 +14,7 @@ extern "C"
 #define json_containerOf(ptr, type, member) \
   ((type *)((char *)ptr - offsetof(type, member)))
 
-  /** @defgroup
+  /** @defgroup 
    * @{ */
 
   /** Enumeration of codes of supported JSON properties types. */

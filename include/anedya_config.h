@@ -36,6 +36,9 @@ extern "C"
 #endif
         } anedya_config_t;
 
+        /** @defgroup anedyaconfig Anedya Config
+         * @{ */
+
         /**
          * @brief Parses a device ID string into a binary array format.
          *
@@ -184,6 +187,7 @@ extern "C"
          *       NULL; otherwise, an error will be returned.
          */
         anedya_err_t anedya_config_register_event_handler(anedya_config_t *config, anedya_event_handler_t event_handler, anedya_context_t ctx);
+        /**@}*/
 #endif
 
 #ifdef __cplusplus

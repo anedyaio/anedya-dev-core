@@ -50,7 +50,8 @@ extern "C"
                 anedya_event_handler_t _event_handler;
                 anedya_txn_store_t txn_store;
         };
-
+        /** @defgroup anedyaclient Anedya Client
+         * @{ */
         /**
          * @brief Initialize the Anedya client with the provided configuration.
          *
@@ -110,6 +111,7 @@ extern "C"
          *
          * @note Ensure that the client is disconnected before calling this function.
          */
+        /** @ } */
         anedya_err_t anedya_client_destroy(anedya_client_t *client);
 
         void _anedya_message_handler(anedya_client_t *cl, char *topic, int topic_len, char *payload, int payload_len);

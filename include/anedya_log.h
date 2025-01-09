@@ -4,7 +4,9 @@
 extern "C"
 {
 #endif
-
+/** @defgroup anedyalog Anedya Log 
+ * @{ */
+     
     /**
      * @brief Log a debug message for Anedya.
      *
@@ -14,6 +16,8 @@ extern "C"
      *
      */
     void anedya_debug_log(const char *log);
+
+    /** @} */
 
 #ifdef __cplusplus
 }
