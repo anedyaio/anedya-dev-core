@@ -22,13 +22,6 @@ See config.h for tuning operations of this library.
 #include "anedya_commons.h"
 #include "anedya_config.h"
 
-// Define the interface in anedya_sdk_config.h 
-#ifdef ASDK_ESP_QUECTEL_EC200_INTERFACE
-#include "anedya_esp_quectelEC200_interface.h"
-#endif
-#ifdef ASDK_ESP_WIFI_INTERFACE
-#include "anedya_esp_wifi_interface.h"
-#endif
 
 #ifdef __cplusplus
 extern "C"

@@ -1,6 +1,6 @@
 #include "anedya_interface.h"
 
-#ifdef ASDK_ESP_WIFI_INTERFACE
+
 #include "anedya_esp_wifi_interface.h"
 #include "anedya_certs.h"
 #include "anedya_client.h"
@@ -215,4 +215,3 @@ void _anedya_interface_std_out(const char *str)
 }
 
 #endif
-#endif // end of ASDK_ESP_WIFI_INTERFACE

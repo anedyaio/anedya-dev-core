@@ -1,6 +1,5 @@
 #include "anedya_interface.h"
 
-#ifdef ASDK_ESP_QUECTEL_EC200_INTERFACE
 // Network Interface is Sim Network Quectel
 
 #include "anedya_esp_quectelEC200_interface.h"
@@ -1398,4 +1397,3 @@ anedya_err_t anedya_ext_ota_reader_close(anedya_client_t *client, anedya_ext_net
     return ANEDYA_OK;
 }
 
-#endif // end of ASDK_ESP_QUECTEL_EC200_INTERFACE

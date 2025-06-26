@@ -12,33 +12,14 @@
 #define ANEDYA_ENABLE_VALUESTORE
 #define ANEDYA_ENABLE_DEBUG_OUTPUT
 
-/**
- * Define the network interface to be used by the Device
- */
-
-/*======================================*/
-#ifdef CONFIG_ASDK_ESP_WIFI_INTERFACE
-#define ASDK_ESP_WIFI_INTERFACE
-#endif
-/*======================================*/
-
-/*======================================*/
-#ifdef CONFIG_ASDK_ESP_QUECTEL_EC200_INTERFACE
-#define ASDK_ESP_QUECTEL_EC200_INTERFACE
-#endif
-
-/*======================================*/
 
 
 /*======================================*/
 // select certificate usage 
-#ifdef ASDK_ESP_WIFI_INTERFACE
-#define ANEDYA_EMBED_DER // Enable this to embed certificates in DER format
-#endif
 
-#ifdef ASDK_ESP_QUECTEL_EC200_INTERFACE
-#define ANEDYA_EMBED_PEM    // Enable this to embed certificates in PEM format
-#endif
+// #define ANEDYA_EMBED_DER // Enable this to embed certificates in DER format
+#define ANEDYA_EMBED_PEM    // Enable this to embed certificates in PEM format, use this if your interface is esp-quectelEC200
+
 /*======================================*/
 
 
@@ -66,9 +47,7 @@ Defining both of the methods will result in compilation error.
 Depending on the method selected, corresponding implementation of APIs will be implemented.
 
 */
-#ifdef CONFIG_CONN_ANEDYA_MQTT
 #define ANEDYA_CONNECTION_METHOD_MQTT
-#endif
 // #define ANEDYA_CONNECTION_METHOD_HTTP
 
 // Include error definitions, omit these definitions reduces binary size by a small margin

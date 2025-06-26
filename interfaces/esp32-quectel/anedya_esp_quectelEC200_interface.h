@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-#ifdef ASDK_ESP_QUECTEL_EC200_INTERFACE
+
 
 #include "esp_err.h"
 #include "anedya_commons.h"
@@ -358,7 +358,6 @@ extern "C"
    */
   anedya_err_t anedya_ext_ota_reader_close(anedya_client_t *client, anedya_ext_net_reader_t *reader);
 
-#endif
 
 #ifdef __cplusplus
 }
