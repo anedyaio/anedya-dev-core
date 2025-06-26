@@ -29,6 +29,7 @@ extern "C"
     typedef unsigned char anedya_bind_secret_t[32];
     typedef unsigned int anedya_client_descriptor_t;
     typedef void *anedya_context_t;
+    typedef void *anedya_interface_config_t;
     typedef uint8_t anedya_event_t;
     typedef struct
     {
@@ -50,6 +51,10 @@ extern "C"
     /** @brief: On event callback, which is called when an event is received from the MQTT Server */
     typedef void (*anedya_event_handler_t)(anedya_client_t *cl, anedya_event_t event_type, void *event_data);
 #endif
+
+#define ANEDYA_DATATYPE_UNKNOWN 0
+#define ANEDYA_DATATYPE_STRING 1
+#define ANEDYA_DATATYPE_BINARY 2
 
 #ifdef __cplusplus
 }

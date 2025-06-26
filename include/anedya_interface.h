@@ -20,6 +20,15 @@ See config.h for tuning operations of this library.
 #include "anedya_err.h"
 #include "anedya_sdk_config.h"
 #include "anedya_commons.h"
+#include "anedya_config.h"
+
+// Define the interface in anedya_sdk_config.h 
+#ifdef ASDK_ESP_QUECTEL_EC200_INTERFACE
+#include "anedya_esp_quectelEC200_interface.h"
+#endif
+#ifdef ASDK_ESP_WIFI_INTERFACE
+#include "anedya_esp_wifi_interface.h"
+#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -32,10 +41,9 @@ extern "C"
 #endif
 
 #ifdef ANEDYA_ENABLE_DYNAMIC_ALLOCATION
+    void *anedya_interface_malloc(size_t size);
 
-    void *_anedya_interface_malloc(size_t size);
-
-    void *_anedya_interface_free(void *ptr);
+    void *anedya_interface_free(void *ptr);
 #endif
 
     /** @brief: An interface used internally to sleep the code for milliseconds provided.*/
@@ -46,6 +54,9 @@ extern "C"
 
     /** @brief: An interface used internally to set the current system time in milliseconds.*/
     void _anedya_interface_set_time_ms(uint64_t time);
+
+    /** @brief: An interface used to initialize the interface.*/
+    anedya_err_t _anedya_interface_init(anedya_client_t *client);
 
     //==================================================================================
     // CONNECTION MANAGEMENT
@@ -76,31 +87,29 @@ extern "C"
      * - For error codes related to MQTT please have a look at the anedya_err.h
      * - If connection gets established, the interface should return ANEDYA_OK error code.
      */
-    anedya_err_t _anedya_interface_mqtt_connect(anedya_mqtt_client_handle_t anclient);
+    anedya_err_t anedya_interface_mqtt_connect(anedya_mqtt_client_handle_t anclient);
 
     /** @brief: Function to terminate the MQTT connection
      */
-    anedya_err_t _anedya_interface_mqtt_disconnect(anedya_mqtt_client_handle_t anclient);
+    anedya_err_t anedya_interface_mqtt_disconnect(anedya_mqtt_client_handle_t anclient);
     /** @brief: Function to destrot the MQTT handle and free up memory
      */
-    anedya_err_t _anedya_interface_mqtt_destroy(anedya_mqtt_client_handle_t anclient);
+    anedya_err_t anedya_interface_mqtt_destroy(anedya_mqtt_client_handle_t anclient);
 
     /** @brief: This method is called to check the current status of the connection.
      *  This method should return 0 if connection is establisehd and any other value if connection is not active.
      */
-    size_t _anedya_interface_mqtt_status(anedya_mqtt_client_handle_t anclient);
+    size_t anedya_interface_mqtt_status(anedya_mqtt_client_handle_t anclient);
 
     /** @brief: Subscribe a topic specified by the library
      * - Returns error code as described in anedya_err.h
      * - If the topic is subscribed successfully, it should return ANEDYA_OK
      */
-    anedya_err_t _anedya_interface_mqtt_subscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topilc_len, int qos);
+    anedya_err_t anedya_interface_mqtt_subscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topilc_len, int qos);
 
-    /** @brief: TODO */
-    anedya_err_t _anedya_interface_mqtt_unsubscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len);
+    anedya_err_t anedya_interface_mqtt_unsubscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len);
 
-    /** @brief: TODO */
-    anedya_err_t _anedya_interface_mqtt_publish(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len, char *payload, int payload_len, int qos, int retain);
+    anedya_err_t anedya_interface_mqtt_publish(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len, char *payload, int payload_len, int qos, int retain);
 
 #endif
 

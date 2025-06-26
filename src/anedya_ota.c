@@ -41,8 +41,8 @@ anedya_err_t anedya_op_ota_next_req(anedya_client_t *client, anedya_txn_t *txn)
     strcpy(topic, "$anedya/device/");
     strcat(topic, client->config->_device_id_str);
     strcat(topic, "/ota/next/json");
-    //printf("REQ: %s", txbuffer);
-    err = _anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
+    // printf("REQ: %s", txbuffer);
+    err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
     if (err != ANEDYA_OK)
     {
         return err;
@@ -76,7 +76,7 @@ void _anedya_op_ota_next_resp(anedya_client_t *client, anedya_txn_t *txn)
     else
     {
         txn->is_success = false;
-        json_t const *error = json_getProperty(json, "errCode");
+        json_t const *error = json_getProperty(json, "errorcode");
         if (!error || JSON_INTEGER != json_getType(error))
         {
             _anedya_interface_std_out("Error, the error property is not found.");
@@ -87,7 +87,7 @@ void _anedya_op_ota_next_resp(anedya_client_t *client, anedya_txn_t *txn)
     }
     // Flow reaches here means, request was successful.
     // Now, parse the response
-    _anedya_op_ota_next_parser(json, resp);
+    _anedya_op_ota_next_parser((json_t *)json, resp);
 }
 
 anedya_err_t _anedya_op_ota_next_parser(json_t *json, anedya_op_next_ota_resp_t *resp)
@@ -233,13 +233,35 @@ anedya_err_t _anedya_op_ota_next_parser(json_t *json, anedya_op_next_ota_resp_t 
 
     // Parse asset URL
     json_t const *aurl = json_getProperty(dpdata, "asseturl");
-    if (!aurl || JSON_TEXT  != json_getType(aurl))
+    if (!aurl || JSON_TEXT != json_getType(aurl))
     {
         _anedya_interface_std_out("Error, the asseturl property is not found.");
         return ANEDYA_ERR_PARSE_ERROR;
     }
     const char *asset_url = json_getValue(aurl);
+    bool firstChar = 0;
     strcpy(resp->asset.asset_url, asset_url);
+    for (int i = 0; i < strlen(resp->asset.asset_url) + 1; i++)
+    {
+        char c;
+        if (resp->asset.asset_url[i] == '?')
+        {
+            if (firstChar)
+            {
+                c = '&';
+            }
+            else
+            {
+                firstChar = 1;
+                c = resp->asset.asset_url[i];
+            }
+        }
+        else
+        {
+            c = resp->asset.asset_url[i];
+        }
+        resp->asset.asset_url[i] = c;
+    }
     resp->asset.asset_url_len = strlen(resp->asset.asset_url);
 
     // All data has been parsed now set the data in response structure.
@@ -292,11 +314,11 @@ anedya_err_t anedya_op_ota_update_status_req(anedya_client_t *client, anedya_txn
     p = anedya_json_end(p, &marker);
     // Body is ready now publish it to the MQTT
     char topic[100];
-    //printf("Req: %s", txbuffer);
+    // printf("Req: %s", txbuffer);
     strcpy(topic, "$anedya/device/");
     strcat(topic, client->config->_device_id_str);
     strcat(topic, "/ota/updateStatus/json");
-    err = _anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
+    err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
     if (err != ANEDYA_OK)
     {
         return err;

@@ -1,5 +1,6 @@
 #pragma once
 
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -15,6 +16,7 @@ extern "C"
                 unsigned int connection_key_len;
                 anedya_device_id_t device_id;
                 anedya_device_id_str_t _device_id_str;
+                anedya_interface_config_t interface_config;
 // MQTT Callbacks
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
                 anedya_on_connect_cb_t on_connect;
@@ -35,9 +37,6 @@ extern "C"
                 size_t datapoints_batch_size;
 #endif
         } anedya_config_t;
-
-        /** @defgroup anedyaconfig Anedya Config
-         * @{ */
 
         /**
          * @brief Parses a device ID string into a binary array format.
@@ -139,6 +138,7 @@ extern "C"
          *       otherwise, an error will be returned.
          */
         anedya_err_t anedya_config_set_connect_cb(anedya_config_t *config, anedya_on_connect_cb_t on_connect, anedya_context_t ctx);
+
         /**
          * @brief Sets the disconnection callback for the Anedya configuration.
          *
@@ -163,6 +163,7 @@ extern "C"
          *       otherwise, an error will be returned.
          */
         anedya_err_t anedya_config_set_disconnect_cb(anedya_config_t *config, anedya_on_disconnect_cb_t on_disconnect, anedya_context_t ctx);
+
         /**
          * @brief Registers an event handler for the Anedya configuration.
          *
@@ -187,7 +188,7 @@ extern "C"
          *       NULL; otherwise, an error will be returned.
          */
         anedya_err_t anedya_config_register_event_handler(anedya_config_t *config, anedya_event_handler_t event_handler, anedya_context_t ctx);
-        /**@}*/
+
 #endif
 
 #ifdef __cplusplus

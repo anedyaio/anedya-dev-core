@@ -12,7 +12,6 @@ extern "C"
 
     typedef int anedya_err_t;
 
-    /** @brief: TODO */
     const char *anedya_err_to_name(anedya_err_t code);
 
 #define ANEDYA_OK 0
@@ -34,6 +33,15 @@ extern "C"
 #define ANEDYA_ERR_RX_BUFFER_OVERFLOW 9
 #define ANEDYA_ERR_INVALID_UUID 10
 #define ANEDYA_ERR_PARSE_ERROR 11
+#define ANEDYA_ERR_INVALID_DATATYPE 12
+#define ANEDYA_ERR_INVALID_DATA 13
+
+#define ANEDYA_ERR_VALUE_TOO_LONG 14
+#define ANEDYA_ERR_VALUE_MISMATCH_LEN 15
+
+//Ext related errors
+#define ANEDYA_EXT_ERR 16
+#define ANEDYA_ERR_EXT_TIMEOUT 17
 
 #ifdef ___cpluplus
 }

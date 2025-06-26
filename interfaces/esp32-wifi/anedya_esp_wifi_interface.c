@@ -1,5 +1,7 @@
-#include "anedya_esp_interface.h"
 #include "anedya_interface.h"
+
+#ifdef ASDK_ESP_WIFI_INTERFACE
+#include "anedya_esp_wifi_interface.h"
 #include "anedya_certs.h"
 #include "anedya_client.h"
 #include "anedya_commons.h"
@@ -26,9 +28,9 @@ uint64_t _anedya_interface_get_time_ms()
     return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_usec / 1000;
 }
 
-static void _anedya_espi_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
+static void anedya_espi_mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
-    ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32, base, event_id);
+    //ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32, base, event_id);
     esp_mqtt_event_handle_t event = event_data;
     //esp_mqtt_client_handle_t client = event->client;
     anedya_client_t *cl = (anedya_client_t *)handler_args;
@@ -36,7 +38,7 @@ static void _anedya_espi_mqtt_event_handler(void *handler_args, esp_event_base_t
     switch ((esp_mqtt_event_id_t)event_id)
     {
     case MQTT_EVENT_CONNECTED:
-        ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+        //ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
         // Issue callback
         if (cl->_anedya_on_connect_handler != NULL)
         {
@@ -44,7 +46,7 @@ static void _anedya_espi_mqtt_event_handler(void *handler_args, esp_event_base_t
         }
         break;
     case MQTT_EVENT_DISCONNECTED:
-        ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+        //ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
         if (cl->_anedya_on_disconnect_handler != NULL)
         {
             cl->_anedya_on_disconnect_handler(cl);
@@ -52,16 +54,16 @@ static void _anedya_espi_mqtt_event_handler(void *handler_args, esp_event_base_t
         break;
 
     case MQTT_EVENT_SUBSCRIBED:
-        ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
+        //ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
-        ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
+        //ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_PUBLISHED:
-        ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
+        //ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_DATA:
-        ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+        //ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         //printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
         //printf("DATA=%.*s\r\n", event->data_len, event->data);
         cl->_message_handler(cl, event->topic, event->topic_len, event->data, event->data_len);
@@ -94,7 +96,6 @@ static void _anedya_espi_mqtt_event_handler(void *handler_args, esp_event_base_t
 
 anedya_mqtt_client_handle_t _anedya_interface_mqtt_init(anedya_client_t *parent, char *broker, const char *devid, const char *secret)
 {
-    esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)parent->mqtt_client;
     esp_mqtt_client_config_t mqtt_cfg = {
         .network.disable_auto_reconnect = false,
         .outbox.limit = 1024,
@@ -111,14 +112,14 @@ anedya_mqtt_client_handle_t _anedya_interface_mqtt_init(anedya_client_t *parent,
             .client_id = devid,
         },
     };
-    ESP_LOGI("ANEDYA_ESPI", "Connecting to MQTT secret: %s  Length:%d", secret, parent->config->connection_key_len);
-    *c = esp_mqtt_client_init(&mqtt_cfg);
+    //ESP_LOGI("ANEDYA_ESPI", "Connecting to MQTT secret: %s  Length:%d", secret, parent->config->connection_key_len);
+    client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, anedya_espi_mqtt_event_handler, (void *)parent);
     vTaskDelay(2 / portTICK_PERIOD_MS);
     return (void *)&client;
 }
 
-anedya_err_t _anedya_interface_mqtt_connect(anedya_mqtt_client_handle_t anclient)
+anedya_err_t anedya_interface_mqtt_connect(anedya_mqtt_client_handle_t anclient)
 {
     esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)anclient;
     esp_err_t err = esp_mqtt_client_start(*c);
@@ -129,7 +130,7 @@ anedya_err_t _anedya_interface_mqtt_connect(anedya_mqtt_client_handle_t anclient
     return ANEDYA_OK;
 }
 
-anedya_err_t _anedya_interface_mqtt_disconnect(anedya_mqtt_client_handle_t anclient)
+anedya_err_t anedya_interface_mqtt_disconnect(anedya_mqtt_client_handle_t anclient)
 {
     esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)anclient;
     esp_err_t err = esp_mqtt_client_stop(*c);
@@ -140,7 +141,7 @@ anedya_err_t _anedya_interface_mqtt_disconnect(anedya_mqtt_client_handle_t ancli
     return ANEDYA_OK;
 }
 
-anedya_err_t _anedya_interface_mqtt_destroy(anedya_mqtt_client_handle_t anclient) {
+anedya_err_t anedya_interface_mqtt_destroy(anedya_mqtt_client_handle_t anclient) {
     esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)anclient;
     esp_err_t err = esp_mqtt_client_destroy(*c);
     if (err != ESP_OK)
@@ -150,7 +151,7 @@ anedya_err_t _anedya_interface_mqtt_destroy(anedya_mqtt_client_handle_t anclient
     return ANEDYA_OK;
 }
 
-size_t _anedya_interface_mqtt_status(anedya_mqtt_client_handle_t anclient)
+size_t anedya_interface_mqtt_status(anedya_mqtt_client_handle_t anclient)
 {
     if (anedya_espi_mqtt_connected)
     {
@@ -162,7 +163,7 @@ size_t _anedya_interface_mqtt_status(anedya_mqtt_client_handle_t anclient)
     }
 }
 
-anedya_err_t _anedya_interface_mqtt_subscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topilc_len, int qos)
+anedya_err_t anedya_interface_mqtt_subscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topilc_len, int qos)
 {
     esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)anclient;
     int id = esp_mqtt_client_subscribe_single(*c, topic, qos);
@@ -177,7 +178,7 @@ anedya_err_t _anedya_interface_mqtt_subscribe(anedya_mqtt_client_handle_t anclie
     return ANEDYA_OK;
 }
 
-anedya_err_t _anedya_interface_mqtt_unsubscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len)
+anedya_err_t anedya_interface_mqtt_unsubscribe(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len)
 {
     esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)anclient;
     int id = esp_mqtt_client_unsubscribe(*c, topic);
@@ -188,7 +189,7 @@ anedya_err_t _anedya_interface_mqtt_unsubscribe(anedya_mqtt_client_handle_t ancl
     return ANEDYA_OK;
 }
 
-anedya_err_t _anedya_interface_mqtt_publish(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len, char *payload, int payload_len, int qos, int retain)
+anedya_err_t anedya_interface_mqtt_publish(anedya_mqtt_client_handle_t anclient, char *topic, int topic_len, char *payload, int payload_len, int qos, int retain)
 {
     esp_mqtt_client_handle_t *c = (esp_mqtt_client_handle_t *)anclient;
     int id = esp_mqtt_client_publish(*c, topic, payload, payload_len, qos, retain);
@@ -203,7 +204,7 @@ anedya_err_t _anedya_interface_mqtt_publish(anedya_mqtt_client_handle_t anclient
     return ANEDYA_OK;
 }
 
-anedya_err_t _anedya_set_message_callback(anedya_mqtt_client_handle_t anclient, anedya_client_t *client)
+anedya_err_t anedya_set_message_callback(anedya_mqtt_client_handle_t anclient, anedya_client_t *client)
 {
     return ANEDYA_OK;
 }
@@ -214,3 +215,4 @@ void _anedya_interface_std_out(const char *str)
 }
 
 #endif
+#endif // end of ASDK_ESP_WIFI_INTERFACE

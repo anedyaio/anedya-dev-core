@@ -1,11 +1,5 @@
 #pragma once
 
-// Anedya Core Library
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "anedya_commons.h"
 #include "anedya_config.h"
 #include "anedya_client.h"
@@ -14,6 +8,11 @@ extern "C"
 #include "anedya_sdk_config.h"
 #include "anedya_interface.h"
 #include "anedya_err.h"
+// Anedya Core Library
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #ifdef __cplusplus
 }

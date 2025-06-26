@@ -2,6 +2,7 @@
 #include "anedya_sdk_config.h"
 #include "anedya_json_builder.h"
 #include "anedya_json_parse.h"
+#include "anedya_op_commands.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -43,7 +44,7 @@ anedya_err_t anedya_device_bind_req(anedya_client_t *client, anedya_txn_t *txn, 
     strcat(topic, "/bindDevice/json");
     // Body is ready
     // printf("BODY : %s", txbuffer);
-    err = _anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
+    err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
     if (err != ANEDYA_OK)
     {
         return err;
@@ -78,7 +79,7 @@ void _anedya_device_handle_generic_resp(anedya_client_t *client, anedya_txn_t *t
     else
     {
         txn->is_success = false;
-        json_t const *error = json_getProperty(json, "errCode");
+        json_t const *error = json_getProperty(json, "errorcode");
         if (!error || JSON_INTEGER != json_getType(error))
         {
             _anedya_interface_std_out("Error, the error property is not found.");
