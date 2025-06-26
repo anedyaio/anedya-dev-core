@@ -1,7 +1,5 @@
 #include "anedya_sdk_config.h"
 
-E
-
 #ifndef _ANEDYA_ESP_INTERFACE_WIFIH_
 #define _ANEDYA_ESP_INTERFACE_WIFI_H_
 
