@@ -222,8 +222,8 @@ void _anedya_on_connect_handler(anedya_client_t *client)
     // Client just got connected to the broker, now subscribe to the topics
     anedya_interface_mqtt_subscribe(client->mqtt_client, client->_message_topics[0], strlen(client->_message_topics[0]), 0);
     anedya_interface_mqtt_subscribe(client->mqtt_client, client->_message_topics[1], strlen(client->_message_topics[1]), 0);
-    anedya_interface_mqtt_subscribe(client->mqtt_client, client->_message_topics[3], strlen(client->_message_topics[2]), 0);
     anedya_interface_mqtt_subscribe(client->mqtt_client, client->_message_topics[2], strlen(client->_message_topics[2]), 0);
+    anedya_interface_mqtt_subscribe(client->mqtt_client, client->_message_topics[3], strlen(client->_message_topics[3]), 0);
     client->is_connected = 1;
     if (client->config->on_connect != NULL)
     {

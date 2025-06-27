@@ -9,7 +9,8 @@ extern "C"
 
 #ifdef ANEDYA_TLS_ENABLE_RSA
 #ifdef ANEDYA_EMBED_DER
-    extern const unsigned char anedya_tls_root_ca[] extern const unsigned int anedya_tls_root_ca_len;
+    extern const unsigned char anedya_tls_root_ca[];
+    extern const unsigned int anedya_tls_root_ca_len;
 #endif
 #ifdef ANEDYA_EMBED_PEM
     // array size is 1310

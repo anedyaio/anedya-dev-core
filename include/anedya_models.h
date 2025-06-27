@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef _ANEDYA_REQ_H_
-#define _ANEDYA_REQ_H_
+#ifndef _ANEDYA_MODELS_H_
+#define _ANEDYA_MODELS_H_
 
 #include <string.h>
 #include <stdint.h>

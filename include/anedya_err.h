@@ -5,7 +5,7 @@
 
 #pragma once
 
-#ifdef ___cpluplus
+#ifdef ___cplusplus
 extern "C"
 {
 #endif
@@ -43,6 +43,6 @@ extern "C"
 #define ANEDYA_EXT_ERR 16
 #define ANEDYA_ERR_EXT_TIMEOUT 17
 
-#ifdef ___cpluplus
+#ifdef ___cplusplus
 }
 #endif

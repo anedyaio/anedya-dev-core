@@ -2,7 +2,7 @@
 
 #include "anedya_sdk_config.h"
 
-#ifdef ___cpluplus
+#ifdef ___cplusplus
 extern "C"
 {
 #endif

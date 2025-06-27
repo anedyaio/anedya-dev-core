@@ -144,4 +144,4 @@ json_t const* json_createWithPool( char* str, jsonPool_t* pool );
 }
 #endif
 
-#endif	/* _TINY_JSON_H_ */
+#endif	/* _ANEDYA_JSON_PARSE_H_ */

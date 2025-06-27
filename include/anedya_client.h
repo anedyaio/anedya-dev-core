@@ -4,7 +4,6 @@
 #include "anedya_err.h"
 #include "anedya_commons.h"
 #include "anedya_config.h"
-#include "anedya_client.h"
 #include "anedya_sdk_config.h"
 #include "anedya_txn.h"
 
@@ -37,7 +36,7 @@ extern "C"
 #ifdef ANEDYA_ENABLE_DEVICE_LOGS
         char *log_buffer;
 #endif
-        char *_message_topics[3]
+        char *_message_topics[3];
 #endif
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
             anedya_mqtt_client_handle_t mqtt_client;
