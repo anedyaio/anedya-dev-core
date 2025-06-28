@@ -22,7 +22,6 @@ See config.h for tuning operations of this library.
 #include "anedya_commons.h"
 #include "anedya_config.h"
 
-
 #ifdef __cplusplus
 extern "C"
 {

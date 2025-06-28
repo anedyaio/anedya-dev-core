@@ -39,7 +39,7 @@ extern "C"
         char *_message_topics[3];
 #endif
 #ifdef ANEDYA_CONNECTION_METHOD_MQTT
-            anedya_mqtt_client_handle_t mqtt_client;
+        anedya_mqtt_client_handle_t mqtt_client;
         anedya_message_handler_t _message_handler;
         anedya_on_connect_handler_t _anedya_on_connect_handler;
         anedya_on_disconnect_handler_t _anedya_on_disconnect_handler;

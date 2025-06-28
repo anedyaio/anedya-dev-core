@@ -105,7 +105,8 @@ void _anedya_op_command_handle_list_resp(anedya_client_t *client, anedya_txn_t *
         return;
     }
     resp->count = (int)json_getInteger(count_prop);
-    if(resp->count==0){
+    if (resp->count == 0)
+    {
         resp->is_available = false;
         return;
     }

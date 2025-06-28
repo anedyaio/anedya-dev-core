@@ -7,8 +7,6 @@ extern "C"
 {
 #endif
 
-
-
 #include "esp_err.h"
 #include "anedya_commons.h"
 #include "anedya_config.h"
@@ -22,7 +20,7 @@ extern "C"
 #include "mqtt_client.h"
 #include "esp_tls.h"
 #include "driver/uart.h"
-#include <string.h> 
+#include <string.h>
 
   typedef struct
   {
@@ -46,8 +44,8 @@ extern "C"
     int apn_count;
   } anedya_ext_config_t;
 
-  #define EXT_MQTT_EVENT_CONNECTED 1
-  #define EXT_MQTT_EVENT_DISCONNECTED 2
+#define EXT_MQTT_EVENT_CONNECTED 1
+#define EXT_MQTT_EVENT_DISCONNECTED 2
 #define EXT_MQTT_EVENT_DATA 3
 
   typedef struct
@@ -65,7 +63,6 @@ extern "C"
     int bytes_read;
   } anedya_ext_net_reader_t;
 
-  
   /**
    * @brief Checks if the modem is connected via UART
    *
@@ -357,7 +354,6 @@ extern "C"
    * @note Ensure that the `reader` pointer is not NULL.
    */
   anedya_err_t anedya_ext_ota_reader_close(anedya_client_t *client, anedya_ext_net_reader_t *reader);
-
 
 #ifdef __cplusplus
 }

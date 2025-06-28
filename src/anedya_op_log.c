@@ -1,6 +1,7 @@
 #include "anedya_operations.h"
 
-anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn, char *log, unsigned int log_len, unsigned long long timestamp_ms) {
+anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn, char *log, unsigned int log_len, unsigned long long timestamp_ms)
+{
     // First check if client is already connected or not
     if (client->is_connected == 0)
     {
@@ -37,7 +38,7 @@ anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn, ch
 
     // Body is ready now publish it to the MQTT
     char topic[100];
-    //printf("Req: %s", txbuffer);
+    // printf("Req: %s", txbuffer);
     strcpy(topic, "$anedya/device/");
     strcat(topic, client->config->_device_id_str);
     strcat(topic, "/logs/submitLogs/json");
