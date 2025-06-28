@@ -9,17 +9,16 @@
 #include "anedya_sdk_config.h"
 #include "anedya_commons.h"
 
-
 typedef struct
 {
-    #ifdef ANEDYA_ENABLE_STATIC_ALLOCATION
-        char key[50];
-        char value[50];
-    #endif 
-    #ifdef ANEDYA_ENABLE_DYNAMIC_ALLOCATION
-        char *key;
-        char *value;
-    #endif
+#ifdef ANEDYA_ENABLE_STATIC_ALLOCATION
+    char key[50];
+    char value[50];
+#endif
+#ifdef ANEDYA_ENABLE_DYNAMIC_ALLOCATION
+    char *key;
+    char *value;
+#endif
     size_t key_len;
     size_t value_len;
 } anedya_asset_metadata_t;
@@ -63,7 +62,7 @@ anedya_err_t anedya_req_bind_device_unmarshal(anedya_req_bind_device_t *req, cha
 
 anedya_err_t _anedya_uuid_parse(const char *in, anedya_uuid_t uuid);
 void _anedya_uuid_marshal(const anedya_uuid_t uuid, char *out);
-int _anedya_strcmp(const char* x, const char* y);
+int _anedya_strcmp(const char *x, const char *y);
 unsigned int _anedya_base64_encode(unsigned char *data, unsigned char *output);
-unsigned int _anedya_base64_decode(unsigned char* encoded, char *data);
+unsigned int _anedya_base64_decode(unsigned char *encoded, char *data);
 #endif

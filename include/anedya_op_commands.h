@@ -42,7 +42,6 @@ typedef struct
     unsigned short offset;
 } anedya_req_cmd_list_t;
 
-
 typedef struct
 {
     bool is_available;

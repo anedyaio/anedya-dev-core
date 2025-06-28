@@ -2,12 +2,14 @@
 
 #include <stdint.h>
 
-typedef struct {
+typedef struct
+{
     char key[50];
     char value[50];
 } anedya_event_data_t;
 
-typedef struct {
+typedef struct
+{
     const char event_type[50];
     long long timestamp;
     anedya_event_data_t *data;

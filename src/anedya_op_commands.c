@@ -132,14 +132,15 @@ anedya_err_t anedya_op_cmd_status_update(anedya_client_t *client, anedya_txn_t *
             break;
         }
     }
-    if (req_config->data_len != 0 && req_config->data == NULL) {
+    if (req_config->data_len != 0 && req_config->data == NULL)
+    {
         return ANEDYA_ERR_INVALID_DATA;
     }
     p = anedya_json_objClose(p, &marker);
     p = anedya_json_end(p, &marker);
     // Body is ready now publish it to the MQTT
     char topic[100];
-    //printf("Req: %s", txbuffer);
+    // printf("Req: %s", txbuffer);
     strcpy(topic, "$anedya/device/");
     strcat(topic, client->config->_device_id_str);
     strcat(topic, "/commands/updateStatus/json");

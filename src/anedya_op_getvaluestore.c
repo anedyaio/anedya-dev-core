@@ -127,7 +127,7 @@ void _anedya_op_valuestore_handle_get_resp(anedya_client_t *client, anedya_txn_t
                 _anedya_interface_std_out("Error, the id property is not found.");
                 return;
             }
-            const char *id =(char *) json_getValue(id_prop);
+            const char *id = (char *)json_getValue(id_prop);
             strcpy(resp->ns.id, id);
         }
 
@@ -178,7 +178,7 @@ void _anedya_op_valuestore_handle_get_resp(anedya_client_t *client, anedya_txn_t
             _anedya_interface_std_out("Error, the key property is not found.");
             return;
         }
-        const char *k =(char *) json_getValue(key);
+        const char *k = (char *)json_getValue(key);
         strcpy(resp->key, k);
 
         json_t const *value = json_getProperty(json, "value");
@@ -227,11 +227,12 @@ void _anedya_op_valuestore_handle_get_resp(anedya_client_t *client, anedya_txn_t
             _anedya_interface_std_out("Error, the value property is not found.");
             return;
         }
-        const char* v = json_getValue(value);
-        resp->value =(char *)v;
+        const char *v = json_getValue(value);
+        resp->value = (char *)v;
         resp->value_len = strlen(resp->value);
         resp->modified = json_getInteger(modified);
-    }else if (strcmp(t, "boolean") == 0)
+    }
+    else if (strcmp(t, "boolean") == 0)
     {
         anedya_valuestore_obj_bool_t *resp = (anedya_valuestore_obj_bool_t *)txn->response;
         json_t const *scope = json_getProperty(namespace, "scope");

@@ -1396,4 +1396,3 @@ anedya_err_t anedya_ext_ota_reader_close(anedya_client_t *client, anedya_ext_net
     // ESP_LOGI(TAG, "Reset the queue");
     return ANEDYA_OK;
 }
-

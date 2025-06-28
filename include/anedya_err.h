@@ -39,7 +39,7 @@ extern "C"
 #define ANEDYA_ERR_VALUE_TOO_LONG 14
 #define ANEDYA_ERR_VALUE_MISMATCH_LEN 15
 
-//Ext related errors
+// Ext related errors
 #define ANEDYA_EXT_ERR 16
 #define ANEDYA_ERR_EXT_TIMEOUT 17
 

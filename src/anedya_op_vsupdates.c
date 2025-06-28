@@ -44,8 +44,8 @@ uint8_t _anedya_parse_valuestore_type(char *payload, size_t payload_len)
 anedya_err_t _anedya_parse_valuestore_float(char *payload, size_t payload_len, anedya_valuestore_obj_float_t *obj)
 {
     json_t mem[32];
-    //printf("Buffer processed: %s\n", payload);
-    // Parse the json and get the txn id
+    // printf("Buffer processed: %s\n", payload);
+    //  Parse the json and get the txn id
     json_t const *json = json_create(payload, mem, sizeof mem / sizeof *mem);
     if (!json)
     {
@@ -89,7 +89,7 @@ anedya_err_t _anedya_parse_valuestore_float(char *payload, size_t payload_len, a
     // Parse Value
     json_t const *value = json_getProperty(json, "value");
     jsonType_t val_type = json_getType(value);
-    //printf("Property: %d", val_type);
+    // printf("Property: %d", val_type);
     if (!value || (JSON_REAL != val_type && JSON_INTEGER != val_type))
     {
         _anedya_interface_std_out("Error, the value property is not found.");
@@ -191,8 +191,8 @@ anedya_err_t _anedya_parse_valuestore_string(char *payload, size_t payload_len, 
 anedya_err_t _anedya_parse_valuestore_bool(char *payload, size_t payload_len, anedya_valuestore_obj_bool_t *obj)
 {
     json_t mem[32];
-    //printf("Buffer processed: %s\n", payload);
-    // Parse the json and get the txn id
+    // printf("Buffer processed: %s\n", payload);
+    //  Parse the json and get the txn id
     json_t const *json = json_create(payload, mem, sizeof mem / sizeof *mem);
     if (!json)
     {
@@ -236,7 +236,7 @@ anedya_err_t _anedya_parse_valuestore_bool(char *payload, size_t payload_len, an
     // Parse Value
     json_t const *value = json_getProperty(json, "value");
     jsonType_t val_type = json_getType(value);
-    //printf("Property: %d", val_type);
+    // printf("Property: %d", val_type);
     if (!value || (JSON_REAL != val_type && JSON_BOOLEAN != val_type))
     {
         _anedya_interface_std_out("Error, the value property is not found.");

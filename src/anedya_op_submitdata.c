@@ -40,7 +40,7 @@ anedya_err_t anedya_op_submit_float_req(anedya_client_t *client, anedya_txn_t *t
 
     // Body is ready now publish it to the MQTT
     char topic[100];
-    //printf("Req: %s", txbuffer);
+    // printf("Req: %s", txbuffer);
     strcpy(topic, "$anedya/device/");
     strcat(topic, client->config->_device_id_str);
     strcat(topic, "/submitdata/json");
@@ -52,7 +52,8 @@ anedya_err_t anedya_op_submit_float_req(anedya_client_t *client, anedya_txn_t *t
     return ANEDYA_OK;
 }
 
-anedya_err_t anedya_op_submit_geo_req(anedya_client_t *client, anedya_txn_t *txn, const char *variable_identifier, anedya_geo_data_t *value, uint64_t timestamp_ms) {
+anedya_err_t anedya_op_submit_geo_req(anedya_client_t *client, anedya_txn_t *txn, const char *variable_identifier, anedya_geo_data_t *value, uint64_t timestamp_ms)
+{
     // First check if client is already connected or not
     if (client->is_connected == 0)
     {
@@ -83,7 +84,7 @@ anedya_err_t anedya_op_submit_geo_req(anedya_client_t *client, anedya_txn_t *txn
     p = anedya_json_str(p, "variable", variable_identifier, &marker);
     p = anedya_json_objOpen(p, "value", &marker);
     p = anedya_json_double(p, "lat", value->lat, &marker);
-    p = anedya_json_double(p, "long",value->lon, &marker);
+    p = anedya_json_double(p, "long", value->lon, &marker);
     p = anedya_json_objClose(p, &marker);
     p = anedya_json_verylong(p, "timestamp", timestamp_ms, &marker);
     p = anedya_json_objClose(p, &marker);
@@ -92,7 +93,7 @@ anedya_err_t anedya_op_submit_geo_req(anedya_client_t *client, anedya_txn_t *txn
     p = anedya_json_end(p, &marker);
     // Body is ready now publish it to the MQTT
     char topic[100];
-    //printf("Req: %s", txbuffer);
+    // printf("Req: %s", txbuffer);
     strcpy(topic, "$anedya/device/");
     strcat(topic, client->config->_device_id_str);
     strcat(topic, "/submitdata/json");
@@ -104,8 +105,7 @@ anedya_err_t anedya_op_submit_geo_req(anedya_client_t *client, anedya_txn_t *txn
     return ANEDYA_OK;
 }
 
-
-anedya_err_t anedya_op_submit_status_req(anedya_client_t *client, anedya_txn_t *txn, const char *variable_identifier, const char * value, uint64_t timestamp_ms)
+anedya_err_t anedya_op_submit_status_req(anedya_client_t *client, anedya_txn_t *txn, const char *variable_identifier, const char *value, uint64_t timestamp_ms)
 {
     // First check if client is already connected or not
     if (client->is_connected == 0)

@@ -142,7 +142,6 @@ void _anedya_op_cmd_handle_next_resp(anedya_client_t *client, anedya_txn_t *txn)
     {
         resp->data = (uint8_t *)data;
         resp->data_len = strlen(data);
-
     }
 
     json_t const *datatype_prop = json_getProperty(json, "datatype");

@@ -178,7 +178,7 @@ anedya_err_t anedya_op_submit_float_req(anedya_client_t *client, anedya_txn_t *t
  * @warning This function uses static or dynamic allocation based on configuration macros.
  *          Ensure the appropriate allocation macros are defined.
  */
-anedya_err_t anedya_op_submit_status_req(anedya_client_t *client, anedya_txn_t *txn, const char *variable_identifier, const char* value, uint64_t timestamp_ms);
+anedya_err_t anedya_op_submit_status_req(anedya_client_t *client, anedya_txn_t *txn, const char *variable_identifier, const char *value, uint64_t timestamp_ms);
 
 /**
  * @brief Submit a geo-coordinate data value to the server.
@@ -317,7 +317,7 @@ anedya_err_t anedya_op_valuestore_set_bin(anedya_client_t *client, anedya_txn_t 
  * @warning This function uses static or dynamic allocation based on configuration macros.
  *          Ensure the appropriate allocation macros are defined.
  */
-anedya_err_t anedya_op_valuestore_get_key(anedya_client_t *client, anedya_txn_t *txn, anedya_req_valuestore_get_key_t obj );
+anedya_err_t anedya_op_valuestore_get_key(anedya_client_t *client, anedya_txn_t *txn, anedya_req_valuestore_get_key_t obj);
 
 /**
  * @brief Get the list of the keys from the valuestore at anedya.
@@ -336,7 +336,7 @@ anedya_err_t anedya_op_valuestore_get_key(anedya_client_t *client, anedya_txn_t 
  * @warning This function uses static or dynamic allocation based on configuration macros.
  *          Ensure the appropriate allocation macros are defined.
  */
-anedya_err_t anedya_op_valuestore_list_obj(anedya_client_t *client, anedya_txn_t *txn, anedya_req_valuestore_list_obj_t obj );
+anedya_err_t anedya_op_valuestore_list_obj(anedya_client_t *client, anedya_txn_t *txn, anedya_req_valuestore_list_obj_t obj);
 
 /**
  * @brief Delete a value from the valuestore at anedya.
@@ -451,10 +451,6 @@ anedya_err_t anedya_op_cmd_next(anedya_client_t *client, anedya_txn_t *txn);
  *          Ensure the appropriate allocation macros are defined.
  */
 anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn, char *log, unsigned int log_len, unsigned long long timestamp_ms);
-
-
-
-
 
 //========================== Reponse handlers ===================================
 void _anedya_device_handle_generic_resp(anedya_client_t *client, anedya_txn_t *txn);
