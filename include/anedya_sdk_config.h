@@ -76,12 +76,15 @@ Depending on the method selected, corresponding implementation of APIs will be i
 // Higher buffer will be able to include multiple datapoint submission in single request but will occupy higher SRAM
 // Default buffer size is 1024 bytes
 #ifdef ANEDYA_ENABLE_STATIC_ALLOCATION
-#define ANEDYA_TX_BUFFER_SIZE CONFIG_AN_TX_BUFFER
-#define ANEDYA_RX_BUFFER_SIZE CONFIG_AN_RX_BUFFER
+#define ANEDYA_TX_BUFFER_SIZE 1024
+#define ANEDYA_RX_BUFFER_SIZE 1024
+// #define ANEDYA_TX_BUFFER_SIZE CONFIG_AN_TX_BUFFER
+// #define ANEDYA_RX_BUFFER_SIZE CONFIG_AN_RX_BUFFER
 #ifdef ANEDYA_ENABLE_DEVICE_LOGS
 #define ANEDYA_LOG_BUFFER 1024  // Anedya max size of the log
 #define ANEDYA_MAX_LOG_BATCH 10 // Maximum Number of logs that can be submitted in a single request
 #endif
 #endif
 
-#define ANEDYA_MAX_CONCURRENT_TXN CONFIG_AN_MAX_CONCURRENT_TXN // Number of maximum under process concurrent requests to Anedya. Please note that each concurrent transaction will consume
+#define ANEDYA_MAX_CONCURRENT_TXN 10 // Number of maximum under process concurrent requests to Anedya. Please note that each concurrent transaction will consume
+// #define ANEDYA_MAX_CONCURRENT_TXN CONFIG_AN_MAX_CONCURRENT_TXN // Number of maximum under process concurrent requests to Anedya. Please note that each concurrent transaction will consume
