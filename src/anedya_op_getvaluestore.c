@@ -182,12 +182,21 @@ void _anedya_op_valuestore_handle_get_resp(anedya_client_t *client, anedya_txn_t
         strcpy(resp->key, k);
 
         json_t const *value = json_getProperty(json, "value");
-        if (!value || JSON_INTEGER != json_getType(value))
+        jsonType_t val_type = json_getType(value);
+        if (!value || (JSON_REAL != val_type && JSON_INTEGER != val_type))
         {
             _anedya_interface_std_out("Error, the value property is not found.");
             return;
         }
-        resp->value = json_getInteger(value);
+        if (val_type == JSON_REAL)
+        {
+            resp->value = json_getReal(value);
+        }
+        if (val_type == JSON_INTEGER)
+        {
+            resp->value = (float)json_getInteger(value);
+        }
+
         resp->modified = json_getInteger(modified);
     }
     else if (strcmp(t, "binary") == 0)
