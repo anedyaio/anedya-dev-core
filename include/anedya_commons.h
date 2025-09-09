@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <stdint.h>
 #include "anedya_sdk_config.h"
 #include "anedya_err.h"
 

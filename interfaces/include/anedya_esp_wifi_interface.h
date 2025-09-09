@@ -1,3 +1,7 @@
+#include "sdkconfig.h"
+
+#ifdef CONFIG_AN_INTERFACE_ESP32_WIFI
+
 #include "anedya_sdk_config.h"
 
 #ifndef _ANEDYA_ESP_INTERFACE_WIFIH_
@@ -13,3 +17,5 @@
 #include "esp_tls.h"
 
 #endif
+
+#endif // AN_INTERFACE_ESP32_WIFI

@@ -15,7 +15,7 @@
 // select certificate usage
 
 // #define ANEDYA_EMBED_DER // Enable this to embed certificates in DER format
-#define ANEDYA_EMBED_PEM // Enable this to embed certificates in PEM format, use this if your interface is ESP-QuectelEC200
+// #define ANEDYA_EMBED_PEM // Enable this to embed certificates in PEM format
 
 /*======================================*/
 

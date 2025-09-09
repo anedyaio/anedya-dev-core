@@ -1,5 +1,9 @@
 #pragma once
 
+#include "sdkconfig.h"
+
+#ifdef CONFIG_AN_INTERFACE_ESP32_QUETEL
+
 #include "anedya_sdk_config.h"
 
 #ifdef ___cplusplus
@@ -19,8 +23,10 @@ extern "C"
 #include <sys/param.h>
 #include "mqtt_client.h"
 #include "esp_tls.h"
-#include "driver/uart.h"
 #include <string.h>
+#include "driver/gpio.h"
+#include "driver/uart.h"
+
 
   typedef struct
   {
@@ -250,7 +256,7 @@ extern "C"
    * @warning The UART must be initialized before calling this function.
    * @note Ensure that the `url` is a valid URL.
    */
-  anedya_err_t anedya_ext_net_check(anedya_client_t *client, char *url, int timeout);
+  anedya_err_t anedya_ext_net_check(anedya_client_t *client, char *url, int url_len, int timeout);
 
   /**
    * @brief Sets the Access Point Name (APN) for a specified PDP context
@@ -358,3 +364,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif // AN_INTERFACE_ESP32_QUETEL
