@@ -1,3 +1,7 @@
+#include "sdkconfig.h"
+
+#ifdef CONFIG_AN_INTERFACE_ESP32_WIFI
+
 #include "anedya_interface.h"
 
 #include "anedya_esp_wifi_interface.h"
@@ -14,6 +18,11 @@ static const char *TAG = "ANEDYA_ESPI";
 
 esp_mqtt_client_handle_t client;
 bool anedya_espi_mqtt_connected = false;
+
+anedya_err_t _anedya_interface_init(anedya_client_t *client)
+{
+    return ANEDYA_OK;
+}
 
 void _anedya_interface_sleep_ms(size_t ms)
 {
@@ -215,3 +224,5 @@ void _anedya_interface_std_out(const char *str)
 }
 
 #endif
+
+#endif // AN_INTERFACE_ESP32_WIFI
