@@ -324,6 +324,9 @@ void _anedya_handle_txn_response(anedya_client_t *cl, char *payload, int payload
         case ANEDYA_OP_OTA_NEXT:
             _anedya_op_ota_next_resp(cl, txn);
             break;
+        case ANEDYA_OP_ONGOING_OTA:
+            _anedya_op_ongoing_ota_resp(cl, txn);
+            break;
         case ANEDYA_OP_SUBMIT_DATA:
             _anedya_device_handle_generic_resp(cl, txn);
             break;

@@ -30,6 +30,7 @@
 #define ANEDYA_OP_VALUESTORE_DELETE 12
 #define ANEDYA_OP_CMD_GET_LIST 13
 #define ANEDYA_OP_CMD_NEXT 14
+#define ANEDYA_OP_ONGOING_OTA 15
 
 // Anedya Events
 #define ANEDYA_EVENT_VS_UPDATE_FLOAT 1
@@ -111,6 +112,26 @@ anedya_err_t anedya_device_send_heartbeat(anedya_client_t *client, anedya_txn_t 
  *          Ensure the appropriate allocation macros are defined.
  */
 anedya_err_t anedya_op_ota_next_req(anedya_client_t *client, anedya_txn_t *txn);
+
+/**
+ * @brief List ongoing OTA deployments, for which device has specified status at least once.
+ *
+ * This function lists ongoing OTA deployments, for which the device has specified status at least once.
+ * This does not list deployments with status: skipped, aborted, success and failure. Apart from that any status is considered as "in Progress".
+ *
+ * @param[in] client Pointer to the `anedya_client_t` structure representing the client.
+ * @param[out] txn Pointer to an `anedya_txn_t` structure for the OTA list transaction.
+ *                 The response (`txn->response`) will be populated with OTA deployment details.
+ *
+ * @retval - `ANEDYA_OK` if the OTA list request is successfully sent.
+ * @retval - `ANEDYA_ERR_NOT_CONNECTED` if the client is not connected to the server.
+ * @retval - Error code if transaction registration or message publishing fails.
+ *
+ * @note Ensure the client is connected before calling this function.
+ * @warning This function uses static or dynamic allocation based on configuration macros.
+ *          Ensure the appropriate allocation macros are defined.
+ */
+anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client, anedya_txn_t *txn);
 
 /**
  * @brief Send an OTA update status to the server.
@@ -455,5 +476,6 @@ anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn, ch
 //========================== Reponse handlers ===================================
 void _anedya_device_handle_generic_resp(anedya_client_t *client, anedya_txn_t *txn);
 void _anedya_op_ota_next_resp(anedya_client_t *client, anedya_txn_t *txn);
+void _anedya_op_ongoing_ota_resp(anedya_client_t *client, anedya_txn_t *txn);
 
 #endif

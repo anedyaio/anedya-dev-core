@@ -3,6 +3,7 @@
 #include "anedya_json_parse.h"
 #include "anedya_ota.h"
 
+//===================== OTA NEXT OPERATION =====================//
 anedya_err_t anedya_op_ota_next_req(anedya_client_t *client, anedya_txn_t *txn)
 {
     anedya_op_next_ota_resp_t *resp = (anedya_op_next_ota_resp_t *)txn->response;
@@ -279,6 +280,249 @@ anedya_err_t _anedya_op_ota_next_parser(json_t *json, anedya_op_next_ota_resp_t 
     return ANEDYA_OK;
 }
 
+//===================== ONGOING OTA OPERATION =====================//
+anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client, anedya_txn_t *txn)
+{
+    anedya_op_ongoing_ota_resp_t *resp = (anedya_op_ongoing_ota_resp_t *)txn->response;
+    // First check if client is already connected or not
+    if (client->is_connected == 0)
+    {
+        return ANEDYA_ERR_NOT_CONNECTED;
+    }
+    // If it is connected, then create a txn
+    txn->_op = ANEDYA_OP_ONGOING_OTA;
+    anedya_err_t err = _anedya_txn_register(client, txn);
+    if (err != ANEDYA_OK)
+    {
+        return err;
+    }
+
+    // Generate the JSON body
+#ifdef ANEDYA_ENABLE_STATIC_ALLOCATION
+    char txbuffer[ANEDYA_TX_BUFFER_SIZE];
+    size_t marker = sizeof(txbuffer);
+#endif
+#ifdef ANEDYA_ENABLE_DYNAMIC_ALLOCATION
+// TODO: Implement dynamic allocation
+#endif
+
+    char slot_number[4];
+    int digitLen = snprintf(slot_number, sizeof(slot_number), "%d", txn->desc);
+    char *p = anedya_json_objOpen(txbuffer, NULL, &marker);
+    // Get the reqId based on slot.
+    p = anedya_json_nstr(p, "reqId", slot_number, digitLen, &marker);
+    p = anedya_json_objClose(p, &marker);
+    p = anedya_json_end(p, &marker);
+    char topic[100];
+
+    strcpy(topic, "$anedya/device/");
+    strcat(topic, client->config->_device_id_str);
+    strcat(topic, "/ota/current/json");
+    // printf("REQ: %s", txbuffer);
+    err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic), txbuffer, strlen(txbuffer), 0, 0);
+    if (err != ANEDYA_OK)
+    {
+        return err;
+    }
+    return ANEDYA_OK;
+}
+
+void _anedya_op_ongoing_ota_resp(anedya_client_t *client, anedya_txn_t *txn)
+{
+    // Parse JSON and check for error
+    anedya_op_ongoing_ota_resp_t *resp = (anedya_op_ongoing_ota_resp_t *)txn->response;
+    json_t mem[32];
+    // Parse the json and get the txn id
+    json_t const *json = json_create(txn->_rxbody, mem, sizeof mem / sizeof *mem);
+    if (!json)
+    {
+        _anedya_interface_std_out("Error while parsing JSON body:response handler OTA Next");
+        return;
+    }
+    // Check if success
+    json_t const *success = json_getProperty(json, "success");
+    if (!success || JSON_BOOLEAN != json_getType(success))
+    {
+        _anedya_interface_std_out("Error, the success property is not found.");
+    }
+    bool s = json_getBoolean(success);
+    if (s == true)
+    {
+        txn->is_success = true;
+    }
+    else
+    {
+        txn->is_success = false;
+        json_t const *error = json_getProperty(json, "errorcode");
+        if (!error || JSON_INTEGER != json_getType(error))
+        {
+            _anedya_interface_std_out("Error, the error property is not found.");
+        }
+        int err = json_getInteger(error);
+        txn->_op_err = err;
+        return;
+    }
+    // Flow reaches here means, request was successful.
+    // Now, parse the response
+    _anedya_op_ongoing_ota_parser((json_t *)json, resp);
+}
+
+anedya_err_t _anedya_op_ongoing_ota_parser(json_t *json, anedya_op_ongoing_ota_resp_t *resp)
+{
+    // Parse count
+    json_t const *count = json_getProperty(json, "count");
+    if (!count || json_getType(count) != JSON_INTEGER)
+    {
+        _anedya_interface_std_out("Error, count property missing.");
+        return ANEDYA_ERR_PARSE_ERROR;
+    }
+
+    resp->count = json_getInteger(count);
+
+    // Parse data array
+    json_t const *arr = json_getProperty(json, "data");
+    if (!arr || json_getType(arr) != JSON_ARRAY)
+    {
+        _anedya_interface_std_out("Error, data array missing.");
+        return ANEDYA_ERR_PARSE_ERROR;
+    }
+
+    int parsed = 0;
+    json_t const *node = json_getChild(arr);
+
+    while (node && parsed < resp->count)
+    {
+        anedya_op_ongoing_asset_list_t *dst = &resp->assets[parsed];
+
+        // deploymentId
+        json_t const *dpID = json_getProperty(node, "deploymentId");
+        if (!dpID || json_getType(dpID) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+        const char *deployment_id = json_getValue(dpID);
+
+        if (_anedya_uuid_parse(deployment_id, dst->deployment_id) != ANEDYA_OK)
+            return ANEDYA_ERR_PARSE_ERROR;
+
+        // assetId
+        json_t const *aID = json_getProperty(node, "assetId");
+        if (!aID || json_getType(aID) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+        const char *asset_id = json_getValue(aID);
+
+        if (_anedya_uuid_parse(asset_id, dst->asset->asset_id) != ANEDYA_OK)
+            return ANEDYA_ERR_PARSE_ERROR;
+
+        // assetIdentifier
+        json_t const *aident = json_getProperty(node, "assetIdentifier");
+        if (!aident || json_getType(aident) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+        strcpy(dst->asset->asset_identifier, json_getValue(aident));
+        dst->asset->asset_identifier_len = strlen(dst->asset->asset_identifier);
+
+        // assetVersion
+        json_t const *aver = json_getProperty(node, "assetVersion");
+        if (!aver || json_getType(aver) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+        strcpy(dst->asset->asset_version, json_getValue(aver));
+        dst->asset->asset_version_len = strlen(dst->asset->asset_version);
+
+        // assetSigned
+        json_t const *asigned = json_getProperty(node, "assetSigned");
+        if (!asigned || json_getType(asigned) != JSON_BOOLEAN)
+            return ANEDYA_ERR_PARSE_ERROR;
+        dst->asset->asset_signed = json_getBoolean(asigned);
+
+        // assetSignature (optional)
+        json_t const *asign = json_getProperty(node, "assetSignature");
+        if (asign && json_getType(asign) == JSON_TEXT)
+        {
+            strcpy(dst->asset->asset_signature, json_getValue(asign));
+            dst->asset->asset_signature_len = strlen(dst->asset->asset_signature);
+        }
+
+        // assetMeta (object)
+        json_t const *ameta = json_getProperty(node, "assetMeta");
+        if (ameta && json_getType(ameta) == JSON_OBJ)
+        {
+            size_t i = 0;
+            json_t const *child;
+            for (child = json_getChild(ameta);
+                 child && i < dst->asset->asset_metadata_len;
+                 child = json_getSibling(child))
+            {
+                if (json_getType(child) != JSON_TEXT)
+                    continue;
+
+                const char *k = json_getName(child);
+                const char *v = json_getValue(child);
+
+                if (!k || !v)
+                    continue;
+
+                strcpy(dst->asset->asset_metadata[i].key, k);
+                strcpy(dst->asset->asset_metadata[i].value, v);
+                i++;
+            }
+        }
+
+        // assetChecksum
+        json_t const *acksum = json_getProperty(node, "assetChecksum");
+        if (!acksum || json_getType(acksum) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+        strcpy(dst->asset->asset_checksum, json_getValue(acksum));
+        dst->asset->asset_checksum_len = strlen(dst->asset->asset_checksum);
+
+        // assetSize
+        json_t const *asize = json_getProperty(node, "assetSize");
+        if (!asize || json_getType(asize) != JSON_INTEGER)
+            return ANEDYA_ERR_PARSE_ERROR;
+        dst->asset->asset_size = json_getInteger(asize);
+
+        // asseturl
+        json_t const *aurl = json_getProperty(node, "asseturl");
+        if (!aurl || json_getType(aurl) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+
+        const char *asset_url = json_getValue(aurl);
+        bool firstChar = 0;
+        strcpy(dst->asset->asset_url, asset_url);
+        for (int i = 0; i < strlen(dst->asset->asset_url) + 1; i++)
+        {
+            char c;
+            if (dst->asset->asset_url[i] == '?')
+            {
+                if (firstChar)
+                {
+                    c = '&';
+                }
+                else
+                {
+                    firstChar = 1;
+                    c = dst->asset->asset_url[i];
+                }
+            }
+            else
+            {
+                c = dst->asset->asset_url[i];
+            }
+            dst->asset->asset_url[i] = c;
+        }
+        dst->asset->asset_url_len = strlen(dst->asset->asset_url);
+
+        // status
+        json_t const *stat = json_getProperty(node, "status");
+        if (!stat || json_getType(stat) != JSON_TEXT)
+            return ANEDYA_ERR_PARSE_ERROR;
+        strcpy(dst->status, json_getValue(stat));
+
+        parsed++;
+        node = json_getSibling(node);
+    }
+
+    return ANEDYA_OK;
+}
+
+// ===================== OTA UPDATE STATUS OPERATION =====================//
 anedya_err_t anedya_op_ota_update_status_req(anedya_client_t *client, anedya_txn_t *txn, anedya_req_ota_update_status_t *req)
 {
     // First check if client is already connected or not
