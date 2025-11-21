@@ -255,14 +255,12 @@ void _anedya_handle_txn_response(anedya_client_t *cl, char *payload, int payload
 {
     // Parse the payload, and get the txn id
     // printf("Handling txn response\r\n");
-    char buffer[ANEDYA_RX_BUFFER_SIZE];
-    char str[ANEDYA_RX_BUFFER_SIZE];
+    // file-scope globals (BSS section, no runtime malloc)
+    static char buffer[ANEDYA_RX_BUFFER_SIZE];
+    static char str[ANEDYA_RX_BUFFER_SIZE];
     int str_len = payload_len;
-    for (int i = 0; i < ANEDYA_RX_BUFFER_SIZE; i++)
-    {
-        buffer[i] = 0;
-        str[i] = 0;
-    }
+    memset(str, 0, ANEDYA_RX_BUFFER_SIZE);
+    memset(buffer, 0, ANEDYA_RX_BUFFER_SIZE);
     memcpy(str, payload, payload_len);
     memcpy(buffer, str, str_len);
     // printf("Payload Received: %s\r\n", str);

@@ -15,6 +15,14 @@ extern "C"
         anedya_asset_t asset;
     } anedya_op_next_ota_resp_t;
 
+    // ------ongoing OTA ------
+
+    typedef struct
+    {
+        unsigned short limit;
+        unsigned short offset;
+    } anedya_req_ongoing_ota_obj_t;
+
     typedef struct
     {
         anedya_uuid_t deployment_id;
@@ -28,6 +36,7 @@ extern "C"
         anedya_op_ongoing_asset_list_t *assets;
     } anedya_op_ongoing_ota_resp_t;
 
+    // ------update OTA status ------
     typedef struct
     {
         const char *status;

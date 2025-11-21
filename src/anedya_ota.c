@@ -281,7 +281,7 @@ anedya_err_t _anedya_op_ota_next_parser(json_t *json, anedya_op_next_ota_resp_t 
 }
 
 //===================== ONGOING OTA OPERATION =====================//
-anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client, anedya_txn_t *txn)
+anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client, anedya_txn_t *txn, anedya_req_ongoing_ota_obj_t obj)
 {
     anedya_op_ongoing_ota_resp_t *resp = (anedya_op_ongoing_ota_resp_t *)txn->response;
     // First check if client is already connected or not
@@ -377,7 +377,7 @@ anedya_err_t _anedya_op_ongoing_ota_parser(json_t *json, anedya_op_ongoing_ota_r
         return ANEDYA_ERR_PARSE_ERROR;
     }
 
-    resp->count = json_getInteger(count);
+    // resp->count = json_getInteger(count);  // #remove comment
 
     // Parse data array
     json_t const *arr = json_getProperty(json, "data");

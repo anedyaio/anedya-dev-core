@@ -131,7 +131,7 @@ anedya_err_t anedya_op_ota_next_req(anedya_client_t *client, anedya_txn_t *txn);
  * @warning This function uses static or dynamic allocation based on configuration macros.
  *          Ensure the appropriate allocation macros are defined.
  */
-anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client, anedya_txn_t *txn);
+anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client, anedya_txn_t *txn, anedya_req_ongoing_ota_obj_t obj);
 
 /**
  * @brief Send an OTA update status to the server.
