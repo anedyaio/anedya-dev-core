@@ -377,8 +377,14 @@ anedya_err_t _anedya_op_ongoing_ota_parser(json_t *json, anedya_op_ongoing_ota_r
         return ANEDYA_ERR_PARSE_ERROR;
     }
 
-    // resp->count = json_getInteger(count);  // #remove comment
+    int c = json_getInteger(count);
+    if (c == 0)
+    {
+        resp->count = 0;
+        return ANEDYA_OK;
+    }
 
+    // resp->count = json_getInteger(count); // #remove
     // Parse data array
     json_t const *arr = json_getProperty(json, "data");
     if (!arr || json_getType(arr) != JSON_ARRAY)
@@ -392,6 +398,12 @@ anedya_err_t _anedya_op_ongoing_ota_parser(json_t *json, anedya_op_ongoing_ota_r
 
     while (node && parsed < resp->count)
     {
+        if (c == parsed)
+        {
+            resp->count = parsed;
+            break;
+        }
+
         anedya_op_ongoing_asset_list_t *dst = &resp->assets[parsed];
 
         // deploymentId
