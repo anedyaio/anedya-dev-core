@@ -1,6 +1,7 @@
 #pragma once
 
 #include "anedya_commons.h"
+#include "anedya_json_parse.h"
 #include "anedya_models.h"
 
 #ifdef __cplusplus

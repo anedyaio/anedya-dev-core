@@ -609,5 +609,6 @@ anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn,
 void _anedya_device_handle_generic_resp(anedya_client_t *client,
                                         anedya_txn_t *txn);
 void _anedya_op_ota_next_resp(anedya_client_t *client, anedya_txn_t *txn);
+void _anedya_op_ongoing_ota_resp(anedya_client_t *client, anedya_txn_t *txn);
 
 #endif
