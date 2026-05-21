@@ -105,6 +105,60 @@ extern "C"
 
 #endif
 
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+
+    /**
+     * @brief Perform a synchronous HTTP POST request to the Anedya server.
+     *
+     * This interface function must be implemented by the platform layer. It is responsible
+     * for performing a TLS-secured HTTP POST request to the Anedya REST API.
+     *
+     * Authentication headers (`Auth-mode: key` and `Authorization: <connection_key>`) must
+     * be set by the implementation using client->config->connection_key.
+     *
+     * @param[in]  client        Pointer to the anedya_client_t (used to access config/region/key).
+     * @param[in]  path          The HTTP path to POST to, e.g. "/v1/submitData".
+     * @param[in]  payload       JSON payload string (null-terminated).
+     * @param[in]  payload_len   Length of payload.
+     * @param[out] resp_buf      Pre-allocated buffer where the response body will be written.
+     * @param[in]  resp_buf_size Size of resp_buf.
+     * @param[out] resp_len      Actual number of bytes written into resp_buf.
+     *
+     * @retval ANEDYA_OK          on HTTP 200 success.
+     * @retval ANEDYA_ERR         on any transport/TLS/HTTP error.
+     */
+    anedya_err_t _anedya_interface_http_post(
+        anedya_client_t *client,
+        const char *path,
+        const char *payload,
+        int payload_len,
+        char *resp_buf,
+        int resp_buf_size,
+        int *resp_len);
+
+    /**
+     * @brief Perform a synchronous HTTP GET request to the Anedya server.
+     *
+     * Identical contract to _anedya_interface_http_post but uses GET method and sends no body.
+     * Reserved for future use; currently all Anedya endpoints use POST.
+     *
+     * @param[in]  client        Pointer to the anedya_client_t.
+     * @param[in]  path          The HTTP path to GET.
+     * @param[out] resp_buf      Pre-allocated response buffer.
+     * @param[in]  resp_buf_size Size of resp_buf.
+     * @param[out] resp_len      Actual bytes written.
+     *
+     * @retval ANEDYA_OK on success, ANEDYA_ERR on failure.
+     */
+    anedya_err_t _anedya_interface_http_get(
+        anedya_client_t *client,
+        const char *path,
+        char *resp_buf,
+        int resp_buf_size,
+        int *resp_len);
+
+#endif /* ANEDYA_CONNECTION_METHOD_HTTP */
+
 #ifdef __cplusplus
 }
 #endif

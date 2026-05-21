@@ -63,9 +63,11 @@ anedya_err_t anedya_config_init(anedya_config_t *config, anedya_device_id_t devI
             devId[14], devId[15]);
     // printf("UUID: %s\n", uuid_str);
     memcpy(config->_device_id_str, uuid_str, 37);
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
     config->event_handler = NULL;
     config->on_connect = NULL;
     config->on_disconnect = NULL;
+#endif /* ANEDYA_CONNECTION_METHOD_MQTT */
     return ANEDYA_OK;
 }
 

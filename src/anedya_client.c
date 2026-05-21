@@ -54,6 +54,21 @@ anedya_err_t anedya_client_init(anedya_config_t *config,
   }
 #endif
 
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+  // Build REST base URL: device.<region>.anedya.io
+  char http_url[100];
+  sprintf(http_url, "device.%s.anedya.io", config->region);
+  strcpy(client->http_base_url, http_url);
+  // HTTP is stateless - mark as connected immediately
+  client->is_connected = 1;
+  // Initialize txn store (still used to track in-flight requests)
+  err = _anedya_txn_store_init(&client->txn_store);
+  if (err != ANEDYA_OK) {
+    return err;
+  }
+#endif
+
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   char topic_prefix[100];
   strcpy(topic_prefix, "$anedya/device/");
   strcat(topic_prefix, config->_device_id_str);
@@ -70,6 +85,7 @@ anedya_err_t anedya_client_init(anedya_config_t *config,
 
   strcpy(client->_message_topics[3], topic_prefix);
   strcat(client->_message_topics[3], "valuestore/updates/json");
+#endif
 
   return ANEDYA_OK;
 }
@@ -106,7 +122,22 @@ anedya_err_t anedya_client_destroy(anedya_client_t *client) {
 
 #endif
 
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+anedya_err_t anedya_client_connect(anedya_client_t *client) {
+  /* HTTP is stateless – no persistent TCP connection needed.
+   * Just mark as connected so operation functions can proceed. */
+  client->is_connected = 1;
+  return ANEDYA_OK;
+}
+
+anedya_err_t anedya_client_disconnect(anedya_client_t *client) {
+  client->is_connected = 0;
+  return ANEDYA_OK;
+}
+#endif
+
 anedya_err_t _anedya_txn_store_init(anedya_txn_store_t *store) {
+
   for (int i = 0; i < ANEDYA_MAX_CONCURRENT_TXN; i++) {
     store->txn_slot_free[i] = 1;
     store->txns[i] = NULL;
@@ -165,38 +196,29 @@ anedya_err_t _anedya_txn_store_release_slot(anedya_txn_store_t *store,
   return ANEDYA_OK;
 }
 
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
 void _anedya_message_handler(anedya_client_t *cl, char *topic, int topic_len,
                              char *payload, int payload_len) {
   // Just received the message, now determine for which topic this message is
   // delivered
-  //_anedya_interface_std_out("Processing message");
-  // printf("Matching from: %.*s Len: %d\r\n", topic_len, topic, topic_len);
   int i = 0;
   for (i = 0; i < 4; i++) {
-    // printf("Matching with: %s Len: %d\n", cl->_message_topics[i],
-    // strlen(cl->_message_topics[i]));
     if (strncmp(topic, cl->_message_topics[i],
                 strlen(cl->_message_topics[i]) - 1) == 0) {
-      //_anedya_interface_std_out("Topic matched");
-      // printf("Matching from: %.*s Len: %d\r\n", topic_len, topic, topic_len);
       break;
     }
   }
-  // printf("Index: %d\r\n", i);
   switch (i) {
   case 0:
     _anedya_handle_txn_response(cl, payload, payload_len, 0);
     break;
   case 1:
-    // printf("Error case\r\n");
     _anedya_handle_txn_response(cl, payload, payload_len, 1);
     break;
   case 2:
     _anedya_handle_event(cl, payload, payload_len, 2);
-    // Handle command
     break;
   case 3:
-    // Handle valuestore update
     _anedya_handle_event(cl, payload, payload_len, 3);
     break;
   }
@@ -238,6 +260,75 @@ void _anedya_on_disconnect_handler(anedya_client_t *client) {
   }
   return;
 }
+#endif /* ANEDYA_CONNECTION_METHOD_MQTT */
+
+
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+void _anedya_handle_http_txn_response(anedya_client_t *cl, char *payload,
+                                      int payload_len, anedya_txn_t *txn) {
+    if (payload == NULL || payload_len <= 0) return;
+    
+    txn->_rx_len = payload_len + 1;
+    if (txn->_rx_len > ANEDYA_RX_BUFFER_SIZE) {
+        txn->_op_err = ANEDYA_ERR_RX_BUFFER_OVERFLOW;
+        txn->is_complete = true;
+        txn->is_success = false;
+        _anedya_txn_complete(cl, txn);
+        return;
+    }
+    
+    memcpy(txn->_rxbody, payload, payload_len);
+    txn->_rxbody[payload_len] = '\0';
+    
+    switch (txn->_op) {
+    case ANEDYA_OP_BIND_DEVICE:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_HEARTBEAT:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_OTA_NEXT:
+      _anedya_op_ota_next_resp(cl, txn);
+      break;
+    case ANEDYA_OP_ONGOING_OTA:
+      _anedya_op_ongoing_ota_resp(cl, txn);
+      break;
+    case ANEDYA_OP_SUBMIT_DATA:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_VALUESTORE_SET:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_SUBMIT_EVENT:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_CMD_UPDATE_STATUS:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_SUBMIT_LOG:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_VALUESTORE_GET:
+      _anedya_op_valuestore_handle_get_resp(cl, txn);
+      break;
+    case ANEDYA_OP_VALUESTORE_GET_LIST:
+      _anedya_op_valuestore_handle_list_obj_resp(cl, txn);
+      break;
+    case ANEDYA_OP_VALUESTORE_DELETE:
+      _anedya_device_handle_generic_resp(cl, txn);
+      break;
+    case ANEDYA_OP_CMD_GET_LIST:
+      _anedya_op_command_handle_list_resp(cl, txn);
+      break;
+    case ANEDYA_OP_CMD_NEXT:
+      _anedya_op_cmd_handle_next_resp(cl, txn);
+      break;
+    default:
+      break;
+    }
+    _anedya_txn_complete(cl, txn);
+}
+#endif
 
 void _anedya_handle_txn_response(anedya_client_t *cl, char *payload,
                                  int payload_len, uint8_t topic) {
@@ -260,10 +351,11 @@ void _anedya_handle_txn_response(anedya_client_t *cl, char *payload,
   if (!json) {
     _anedya_interface_std_out("Error while parsing JSON body in TXN handler");
   }
-  // Get the txn id
+  // Get the txn idL
   json_t const *txn_id = json_getProperty(json, "reqId");
   if (!txn_id || JSON_TEXT != json_getType(txn_id)) {
-    _anedya_interface_std_out("Error, the first name property is not found.");
+    _anedya_interface_std_out(
+        "Error, the reqId property is not found in the response.");
   }
   char const *txn_index = json_getValue(txn_id);
   int index = atoi(txn_index);
@@ -344,14 +436,13 @@ void _anedya_handle_txn_response(anedya_client_t *cl, char *payload,
   return;
 }
 
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
 void _anedya_handle_event(anedya_client_t *cl, char *payload, int payload_len,
                           uint8_t topic) {
-  // A new event has been triggerred
+  // A new event has been triggered
   char buffer[ANEDYA_RX_BUFFER_SIZE];
   int buffer_len = payload_len;
   memcpy(buffer, payload, payload_len);
-  // anedya_event_t event;
-  // void *event_data = NULL;
   switch (topic) {
   case 2:
     // Handle command
@@ -364,42 +455,33 @@ void _anedya_handle_event(anedya_client_t *cl, char *payload, int payload_len,
     break;
   case 3:
     // Handle valuestore update
-    // First decode the valuestore object
     uint8_t type = _anedya_parse_valuestore_type(buffer, buffer_len);
     switch (type) {
     case ANEDYA_VALUESTORE_TYPE_FLOAT:
       anedya_valuestore_obj_float_t float_data;
-      // printf("Buffer in: %s", buffer);
       _anedya_parse_valuestore_float(buffer, buffer_len, &float_data);
-      // Call the event handler with data
       if (cl->config->event_handler != NULL) {
         cl->config->event_handler(cl, ANEDYA_EVENT_VS_UPDATE_FLOAT,
                                   &float_data);
       }
       break;
     case ANEDYA_VALUESTORE_TYPE_STRING:
-      // event_data = _anedya_parse_valuestore_string(payload, payload_len);
       anedya_valuestore_obj_string_t str_data;
       _anedya_parse_valuestore_string(buffer, buffer_len, &str_data);
-      // Call the event handler with data
       if (cl->config->event_handler != NULL) {
         cl->config->event_handler(cl, ANEDYA_EVENT_VS_UPDATE_STRING, &str_data);
       }
       break;
     case ANEDYA_VALUESTORE_TYPE_BOOL:
-      // event_data = _anedya_parse_valuestore_json(payload, payload_len);
       anedya_valuestore_obj_bool_t bool_data;
       _anedya_parse_valuestore_bool(buffer, buffer_len, &bool_data);
-      // Call the event handler with data
       if (cl->config->event_handler != NULL) {
         cl->config->event_handler(cl, ANEDYA_EVENT_VS_UPDATE_BOOL, &bool_data);
       }
       break;
     case ANEDYA_VALUESTORE_TYPE_BIN:
-      // event_data = _anedya_parse_valuestore_json(payload, payload_len);
       anedya_valuestore_obj_bin_t bin_data;
       _anedya_parse_valuestore_bin(buffer, buffer_len, &bin_data);
-      // Call the event handler with data
       if (cl->config->event_handler != NULL) {
         cl->config->event_handler(cl, ANEDYA_EVENT_VS_UPDATE_BIN, &bin_data);
       }
@@ -410,3 +492,4 @@ void _anedya_handle_event(anedya_client_t *cl, char *payload, int payload_len,
     break;
   }
 }
+#endif /* ANEDYA_CONNECTION_METHOD_MQTT */

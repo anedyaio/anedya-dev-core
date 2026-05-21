@@ -32,7 +32,9 @@ anedya_err_t anedya_op_ota_next_req(anedya_client_t *client,
   int digitLen = snprintf(slot_number, sizeof(slot_number), "%d", txn->desc);
   char *p = anedya_json_objOpen(txbuffer, NULL, &marker);
   // Get the reqId based on slot.
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   p = anedya_json_nstr(p, "reqId", slot_number, digitLen, &marker);
+#endif
   p = anedya_json_objClose(p, &marker);
   p = anedya_json_end(p, &marker);
   char topic[100];
@@ -41,11 +43,26 @@ anedya_err_t anedya_op_ota_next_req(anedya_client_t *client,
   strcat(topic, client->config->_device_id_str);
   strcat(topic, "/ota/next/json");
   // printf("REQ: %s", txbuffer);
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic),
                                       txbuffer, strlen(txbuffer), 0, 0);
   if (err != ANEDYA_OK) {
     return err;
   }
+#endif /* ANEDYA_CONNECTION_METHOD_MQTT */
+
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+  char resp_buf[ANEDYA_RX_BUFFER_SIZE];
+  int resp_len = 0;
+  err = _anedya_interface_http_post(client, "/v1/ota/next", txbuffer,
+                                    (int)strlen(txbuffer), resp_buf,
+                                    ANEDYA_RX_BUFFER_SIZE, &resp_len);
+  if (err != ANEDYA_OK) {
+    return err;
+  }
+  _anedya_handle_http_txn_response(client, resp_buf, resp_len, txn);
+#endif /* ANEDYA_CONNECTION_METHOD_HTTP */
+
   return ANEDYA_OK;
 }
 
@@ -278,7 +295,9 @@ anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client,
   int digitLen = snprintf(slot_number, sizeof(slot_number), "%d", txn->desc);
   char *p = anedya_json_objOpen(txbuffer, NULL, &marker);
   // Get the reqId based on slot.
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   p = anedya_json_nstr(p, "reqId", slot_number, digitLen, &marker);
+#endif
   p = anedya_json_objClose(p, &marker);
   p = anedya_json_end(p, &marker);
   char topic[100];
@@ -287,11 +306,26 @@ anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client,
   strcat(topic, client->config->_device_id_str);
   strcat(topic, "/ota/current/json");
   // printf("REQ: %s", txbuffer);
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic),
                                       txbuffer, strlen(txbuffer), 0, 0);
   if (err != ANEDYA_OK) {
     return err;
   }
+#endif /* ANEDYA_CONNECTION_METHOD_MQTT */
+
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+  char resp_buf[ANEDYA_RX_BUFFER_SIZE];
+  int resp_len = 0;
+  err = _anedya_interface_http_post(client, "/v1/ota/current", txbuffer,
+                                    (int)strlen(txbuffer), resp_buf,
+                                    ANEDYA_RX_BUFFER_SIZE, &resp_len);
+  if (err != ANEDYA_OK) {
+    return err;
+  }
+  _anedya_handle_http_txn_response(client, resp_buf, resp_len, txn);
+#endif /* ANEDYA_CONNECTION_METHOD_HTTP */
+
   return ANEDYA_OK;
 }
 
@@ -510,7 +544,9 @@ anedya_op_ota_update_status_req(anedya_client_t *client, anedya_txn_t *txn,
   // Get the reqId based on slot.
   char dep_id[37];
   _anedya_uuid_marshal(*req->deployment_id, dep_id);
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   p = anedya_json_nstr(p, "reqId", slot_number, digitLen, &marker);
+#endif
   p = anedya_json_str(p, "deploymentId", dep_id, &marker);
   p = anedya_json_str(p, "status", req->status, &marker);
   p = anedya_json_objClose(p, &marker);
@@ -521,10 +557,25 @@ anedya_op_ota_update_status_req(anedya_client_t *client, anedya_txn_t *txn,
   strcpy(topic, "$anedya/device/");
   strcat(topic, client->config->_device_id_str);
   strcat(topic, "/ota/updateStatus/json");
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   err = anedya_interface_mqtt_publish(client->mqtt_client, topic, strlen(topic),
                                       txbuffer, strlen(txbuffer), 0, 0);
   if (err != ANEDYA_OK) {
     return err;
   }
+#endif /* ANEDYA_CONNECTION_METHOD_MQTT */
+
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+  char resp_buf[ANEDYA_RX_BUFFER_SIZE];
+  int resp_len = 0;
+  err = _anedya_interface_http_post(client, "/v1/ota/updateStatus", txbuffer,
+                                    (int)strlen(txbuffer), resp_buf,
+                                    ANEDYA_RX_BUFFER_SIZE, &resp_len);
+  if (err != ANEDYA_OK) {
+    return err;
+  }
+  _anedya_handle_http_txn_response(client, resp_buf, resp_len, txn);
+#endif /* ANEDYA_CONNECTION_METHOD_HTTP */
+
   return ANEDYA_OK;
 }
