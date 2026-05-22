@@ -32,6 +32,8 @@ struct anedya_client_t {
   char _message_topics[4][100];
 #endif
 #ifdef ANEDYA_ENABLE_DYNAMIC_ALLOCATION
+  char *tx_buffer;
+  char *rx_buffer;
 #ifdef ANEDYA_ENABLE_DEVICE_LOGS
   char *log_buffer;
 #endif
@@ -79,15 +81,12 @@ anedya_err_t _anedya_txn_store_aquire_slot(anedya_txn_store_t *store,
 anedya_err_t _anedya_txn_store_release_slot(anedya_txn_store_t *store,
                                             anedya_txn_t *txn);
 #ifdef ANEDYA_CONNECTION_METHOD_HTTP
-void _anedya_handle_http_txn_response(anedya_client_t *cl, char *payload, int payload_len, anedya_txn_t *txn);
+void _anedya_handle_http_txn_response(anedya_client_t *cl, char *payload,
+                                      int payload_len, anedya_txn_t *txn);
 #endif
 
 void _anedya_handle_txn_response(anedya_client_t *cl, char *payload,
                                  int payload_len, uint8_t topic);
-
-#ifdef ANEDYA_CONNECTION_METHOD_HTTP
-void _anedya_handle_http_txn_response(anedya_client_t *cl, char *payload, int payload_len, anedya_txn_t *txn);
-#endif
 
 void _anedya_handle_event(anedya_client_t *cl, char *payload, int payload_len,
                           uint8_t topic);

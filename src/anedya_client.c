@@ -262,71 +262,71 @@ void _anedya_on_disconnect_handler(anedya_client_t *client) {
 }
 #endif /* ANEDYA_CONNECTION_METHOD_MQTT */
 
-
 #ifdef ANEDYA_CONNECTION_METHOD_HTTP
 void _anedya_handle_http_txn_response(anedya_client_t *cl, char *payload,
                                       int payload_len, anedya_txn_t *txn) {
-    if (payload == NULL || payload_len <= 0) return;
-    
-    txn->_rx_len = payload_len + 1;
-    if (txn->_rx_len > ANEDYA_RX_BUFFER_SIZE) {
-        txn->_op_err = ANEDYA_ERR_RX_BUFFER_OVERFLOW;
-        txn->is_complete = true;
-        txn->is_success = false;
-        _anedya_txn_complete(cl, txn);
-        return;
-    }
-    
-    memcpy(txn->_rxbody, payload, payload_len);
-    txn->_rxbody[payload_len] = '\0';
-    
-    switch (txn->_op) {
-    case ANEDYA_OP_BIND_DEVICE:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_HEARTBEAT:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_OTA_NEXT:
-      _anedya_op_ota_next_resp(cl, txn);
-      break;
-    case ANEDYA_OP_ONGOING_OTA:
-      _anedya_op_ongoing_ota_resp(cl, txn);
-      break;
-    case ANEDYA_OP_SUBMIT_DATA:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_VALUESTORE_SET:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_SUBMIT_EVENT:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_CMD_UPDATE_STATUS:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_SUBMIT_LOG:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_VALUESTORE_GET:
-      _anedya_op_valuestore_handle_get_resp(cl, txn);
-      break;
-    case ANEDYA_OP_VALUESTORE_GET_LIST:
-      _anedya_op_valuestore_handle_list_obj_resp(cl, txn);
-      break;
-    case ANEDYA_OP_VALUESTORE_DELETE:
-      _anedya_device_handle_generic_resp(cl, txn);
-      break;
-    case ANEDYA_OP_CMD_GET_LIST:
-      _anedya_op_command_handle_list_resp(cl, txn);
-      break;
-    case ANEDYA_OP_CMD_NEXT:
-      _anedya_op_cmd_handle_next_resp(cl, txn);
-      break;
-    default:
-      break;
-    }
+  if (payload == NULL || payload_len <= 0)
+    return;
+
+  txn->_rx_len = payload_len + 1;
+  if (txn->_rx_len > ANEDYA_RX_BUFFER_SIZE) {
+    txn->_op_err = ANEDYA_ERR_RX_BUFFER_OVERFLOW;
+    txn->is_complete = true;
+    txn->is_success = false;
     _anedya_txn_complete(cl, txn);
+    return;
+  }
+
+  memcpy(txn->_rxbody, payload, payload_len);
+  txn->_rxbody[payload_len] = '\0';
+
+  switch (txn->_op) {
+  case ANEDYA_OP_BIND_DEVICE:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_HEARTBEAT:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_OTA_NEXT:
+    _anedya_op_ota_next_resp(cl, txn);
+    break;
+  case ANEDYA_OP_ONGOING_OTA:
+    _anedya_op_ongoing_ota_resp(cl, txn);
+    break;
+  case ANEDYA_OP_SUBMIT_DATA:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_VALUESTORE_SET:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_SUBMIT_EVENT:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_CMD_UPDATE_STATUS:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_SUBMIT_LOG:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_VALUESTORE_GET:
+    _anedya_op_valuestore_handle_get_resp(cl, txn);
+    break;
+  case ANEDYA_OP_VALUESTORE_GET_LIST:
+    _anedya_op_valuestore_handle_list_obj_resp(cl, txn);
+    break;
+  case ANEDYA_OP_VALUESTORE_DELETE:
+    _anedya_device_handle_generic_resp(cl, txn);
+    break;
+  case ANEDYA_OP_CMD_GET_LIST:
+    _anedya_op_command_handle_list_resp(cl, txn);
+    break;
+  case ANEDYA_OP_CMD_NEXT:
+    _anedya_op_cmd_handle_next_resp(cl, txn);
+    break;
+  default:
+    break;
+  }
+  _anedya_txn_complete(cl, txn);
 }
 #endif
 
@@ -337,6 +337,10 @@ void _anedya_handle_txn_response(anedya_client_t *cl, char *payload,
   // file-scope globals (BSS section, no runtime malloc)
   static char buffer[ANEDYA_RX_BUFFER_SIZE];
   static char str[ANEDYA_RX_BUFFER_SIZE];
+  if (payload_len >= ANEDYA_RX_BUFFER_SIZE) {
+    _anedya_interface_std_out("Error: Payload too large for RX buffer");
+    return;
+  }
   int str_len = payload_len;
   memset(str, 0, ANEDYA_RX_BUFFER_SIZE);
   memset(buffer, 0, ANEDYA_RX_BUFFER_SIZE);
