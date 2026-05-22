@@ -129,7 +129,7 @@ anedya_err_t anedya_op_valuestore_set_string(anedya_client_t *client,
 #ifdef ANEDYA_CONNECTION_METHOD_HTTP
   char resp_buf[ANEDYA_RX_BUFFER_SIZE];
   int resp_len = 0;
-  err = _anedya_interface_http_post(client, "/v1/valuestore/set", txbuffer,
+  err = _anedya_interface_http_post(client, "/v1/valuestore/setValue", txbuffer,
                                     (int)strlen(txbuffer), resp_buf,
                                     ANEDYA_RX_BUFFER_SIZE, &resp_len);
   if (err != ANEDYA_OK) {
@@ -192,7 +192,7 @@ anedya_err_t anedya_op_valuestore_set_bool(anedya_client_t *client,
 #ifdef ANEDYA_CONNECTION_METHOD_HTTP
   char resp_buf[ANEDYA_RX_BUFFER_SIZE];
   int resp_len = 0;
-  err = _anedya_interface_http_post(client, "/v1/valuestore/set", txbuffer,
+  err = _anedya_interface_http_post(client, "/v1/valuestore/setValue", txbuffer,
                                     (int)strlen(txbuffer), resp_buf,
                                     ANEDYA_RX_BUFFER_SIZE, &resp_len);
   if (err != ANEDYA_OK) {
@@ -270,7 +270,7 @@ anedya_err_t anedya_op_valuestore_set_bin(anedya_client_t *client,
 #ifdef ANEDYA_CONNECTION_METHOD_HTTP
   char resp_buf[ANEDYA_RX_BUFFER_SIZE];
   int resp_len = 0;
-  err = _anedya_interface_http_post(client, "/v1/valuestore/set", txbuffer,
+  err = _anedya_interface_http_post(client, "/v1/valuestore/setValue", txbuffer,
                                     (int)strlen(txbuffer), resp_buf,
                                     ANEDYA_RX_BUFFER_SIZE, &resp_len);
   if (err != ANEDYA_OK) {

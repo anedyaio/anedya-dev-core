@@ -25,9 +25,7 @@ anedya_err_t anedya_op_submit_log(anedya_client_t *client, anedya_txn_t *txn,
   int digitLen = snprintf(slot_number, sizeof(slot_number), "%d", txn->desc);
   char *p = anedya_json_objOpen(txbuffer, NULL, &marker);
   // Get the reqId based on slot.
-#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   p = anedya_json_nstr(p, "reqId", slot_number, digitLen, &marker);
-#endif
   p = anedya_json_arrOpen(p, "data", &marker);
   p = anedya_json_objOpen(p, NULL, &marker);
   p = anedya_json_nstr(p, "log", log, log_len, &marker);

@@ -33,7 +33,8 @@ anedya_err_t anedya_parse_device_id(const char deviceID[37], anedya_device_id_t 
             }
         }
     }
-    for (int i = 0; i < 16; i++){
+    for (int i = 0; i < 16; i++)
+    {
         int8_t hi = (int8_t)parsehex(deviceID[si[i] + 0]);
         int8_t lo = (int8_t)parsehex(deviceID[si[i] + 1]);
         devID[i] = ((hi << 4) | lo);
