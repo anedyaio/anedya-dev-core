@@ -7,10 +7,12 @@
 anedya_err_t anedya_op_valuestore_set_float(anedya_client_t *client,
                                             anedya_txn_t *txn, const char *key,
                                             float value) {
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_VALUESTORE_SET;
   anedya_err_t err = _anedya_txn_register(client, txn);
@@ -70,10 +72,12 @@ anedya_err_t anedya_op_valuestore_set_string(anedya_client_t *client,
                                              anedya_txn_t *txn, const char *key,
                                              const char *value,
                                              size_t value_len) {
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
 
   // Check the length of the value
   size_t value_length = strlen(value); // todo : have to remove strlen
@@ -144,10 +148,12 @@ anedya_err_t anedya_op_valuestore_set_string(anedya_client_t *client,
 anedya_err_t anedya_op_valuestore_set_bool(anedya_client_t *client,
                                            anedya_txn_t *txn, const char *key,
                                            bool value) {
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_VALUESTORE_SET;
   anedya_err_t err = _anedya_txn_register(client, txn);
@@ -208,10 +214,12 @@ anedya_err_t anedya_op_valuestore_set_bin(anedya_client_t *client,
                                           anedya_txn_t *txn, const char *key,
                                           const char *base64_value,
                                           size_t base64_value_len) {
-  // Check if the client is connected
+// Check if the client is connected
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
 
   // Check the length of the Base64 value
   if (base64_value_len > 1000) {

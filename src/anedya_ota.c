@@ -8,10 +8,12 @@ anedya_err_t anedya_op_ota_next_req(anedya_client_t *client,
                                     anedya_txn_t *txn) {
   anedya_op_next_ota_resp_t *resp = (anedya_op_next_ota_resp_t *)txn->response;
   resp->deployment_available = false;
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_OTA_NEXT;
   anedya_err_t err = _anedya_txn_register(client, txn);
@@ -269,10 +271,12 @@ anedya_err_t anedya_op_ongoing_ota_req(anedya_client_t *client,
                                        anedya_req_ongoing_ota_obj_t obj) {
   anedya_op_ongoing_ota_resp_t *resp =
       (anedya_op_ongoing_ota_resp_t *)txn->response;
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_ONGOING_OTA;
   anedya_err_t err = _anedya_txn_register(client, txn);
@@ -518,10 +522,12 @@ anedya_err_t _anedya_op_ongoing_ota_parser(json_t *json,
 anedya_err_t
 anedya_op_ota_update_status_req(anedya_client_t *client, anedya_txn_t *txn,
                                 anedya_req_ota_update_status_t *req) {
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_SUBMIT_DATA;
   anedya_err_t err = _anedya_txn_register(client, txn);

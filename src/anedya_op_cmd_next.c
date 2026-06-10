@@ -1,10 +1,12 @@
 #include "anedya_operations.h"
 
 anedya_err_t anedya_op_cmd_next(anedya_client_t *client, anedya_txn_t *txn) {
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
 
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_CMD_NEXT;

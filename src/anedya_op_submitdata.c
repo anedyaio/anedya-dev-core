@@ -51,10 +51,12 @@ anedya_err_t anedya_op_submit_float_req(anedya_client_t *client,
                                         anedya_txn_t *txn,
                                         const char *variable_identifier,
                                         float value, uint64_t timestamp_ms) {
-  // First check if client is already connected or not
+// First check if client is already connected or not
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   // If it is connected, then create a txn
   txn->_op = ANEDYA_OP_SUBMIT_DATA;
   anedya_err_t err = _anedya_txn_register(client, txn);
@@ -119,9 +121,11 @@ anedya_err_t anedya_op_submit_geo_req(anedya_client_t *client,
                                       const char *variable_identifier,
                                       anedya_geo_data_t *value,
                                       uint64_t timestamp_ms) {
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   txn->_op = ANEDYA_OP_SUBMIT_DATA;
   anedya_err_t err = _anedya_txn_register(client, txn);
   if (err != ANEDYA_OK) {
@@ -185,9 +189,11 @@ anedya_err_t anedya_op_submit_status_req(anedya_client_t *client,
                                          const char *variable_identifier,
                                          const char *value,
                                          uint64_t timestamp_ms) {
+#ifdef ANEDYA_CONNECTION_METHOD_MQTT
   if (client->is_connected == 0) {
     return ANEDYA_ERR_NOT_CONNECTED;
   }
+#endif
   txn->_op = ANEDYA_OP_SUBMIT_DATA;
   anedya_err_t err = _anedya_txn_register(client, txn);
   if (err != ANEDYA_OK) {
