@@ -32,3 +32,4 @@
 *.app
 doxygen
 .vscode
+developments/
