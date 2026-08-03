@@ -59,6 +59,8 @@ anedya_err_t anedya_client_init(anedya_config_t *config,
   char http_url[100];
   sprintf(http_url, "device.%s.anedya.io", config->region);
   strcpy(client->http_base_url, http_url);
+  // HTTP is stateless - mark as connected immediately
+  client->is_connected = 1;
   // Initialize txn store (still used to track in-flight requests)
   err = _anedya_txn_store_init(&client->txn_store);
   if (err != ANEDYA_OK) {
@@ -118,6 +120,20 @@ anedya_err_t anedya_client_destroy(anedya_client_t *client) {
   return ANEDYA_OK;
 }
 
+#endif
+
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+anedya_err_t anedya_client_connect(anedya_client_t *client) {
+  /* HTTP is stateless – no persistent TCP connection needed.
+   * Just mark as connected so operation functions can proceed. */
+  client->is_connected = 1;
+  return ANEDYA_OK;
+}
+
+anedya_err_t anedya_client_disconnect(anedya_client_t *client) {
+  client->is_connected = 0;
+  return ANEDYA_OK;
+}
 #endif
 
 anedya_err_t _anedya_txn_store_init(anedya_txn_store_t *store) {
@@ -428,9 +444,14 @@ void _anedya_handle_txn_response(anedya_client_t *cl, char *payload,
 void _anedya_handle_event(anedya_client_t *cl, char *payload, int payload_len,
                           uint8_t topic) {
   // A new event has been triggered
-  char buffer[ANEDYA_RX_BUFFER_SIZE];
+  char *buffer = malloc(payload_len + 1);
+  if (!buffer) {
+    _anedya_interface_std_out("OOM in _anedya_handle_event");
+    return;
+  }
   int buffer_len = payload_len;
   memcpy(buffer, payload, payload_len);
+  buffer[payload_len] = '\0';
   switch (topic) {
   case 2:
     // Handle command
@@ -479,5 +500,6 @@ void _anedya_handle_event(anedya_client_t *cl, char *payload, int payload_len,
     }
     break;
   }
+  free(buffer);
 }
 #endif /* ANEDYA_CONNECTION_METHOD_MQTT */

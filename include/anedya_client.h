@@ -46,11 +46,11 @@ struct anedya_client_t {
   anedya_on_disconnect_handler_t _anedya_on_disconnect_handler;
   char broker_url[100];
   anedya_event_handler_t _event_handler;
-  uint8_t is_connected;
 #endif
 #ifdef ANEDYA_CONNECTION_METHOD_HTTP
   char http_base_url[100]; // e.g. "device.ap-in-1.anedya.io"
 #endif
+  uint8_t is_connected;
   anedya_txn_store_t txn_store;
 };
 
@@ -149,6 +149,32 @@ void _anedya_message_handler(anedya_client_t *cl, char *topic, int topic_len,
 void _anedya_on_connect_handler(anedya_client_t *client);
 void _anedya_on_disconnect_handler(anedya_client_t *client);
 
+#endif
+
+#ifdef ANEDYA_CONNECTION_METHOD_HTTP
+/**
+ * @brief Initialize HTTP mode client as "connected" (stateless — no persistent
+ * TCP).
+ *
+ * In HTTP mode there is no long-lived connection to establish. This function
+ * simply validates the configuration, builds the base URL, and marks
+ * is_connected = 1 so that all operation functions can proceed.
+ *
+ * @param[in] client Pointer to the anedya_client_t to operate on.
+ * @retval ANEDYA_OK always.
+ */
+anedya_err_t anedya_client_connect(anedya_client_t *client);
+
+/**
+ * @brief Mark HTTP mode client as disconnected.
+ *
+ * Sets is_connected = 0. Subsequent operation calls will return
+ * ANEDYA_ERR_NOT_CONNECTED.
+ *
+ * @param[in] client Pointer to the anedya_client_t to operate on.
+ * @retval ANEDYA_OK always.
+ */
+anedya_err_t anedya_client_disconnect(anedya_client_t *client);
 #endif
 
 #ifdef __cplusplus
