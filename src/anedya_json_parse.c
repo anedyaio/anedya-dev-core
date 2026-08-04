@@ -15,6 +15,11 @@ typedef struct jsonStaticPool_s
 /* Search a property by its name in a JSON object. */
 json_t const *json_getProperty(json_t const *obj, char const *property)
 {
+    if (!obj || !property)
+    {
+        return NULL; // avoid crash
+    }
+
     json_t const *sibling;
     for (sibling = obj->u.c.child; sibling; sibling = sibling->sibling)
         if (sibling->name && !strcmp(sibling->name, property))

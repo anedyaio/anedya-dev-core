@@ -4,41 +4,46 @@
 uint8_t _anedya_parse_valuestore_type(char *payload, size_t payload_len)
 {
     json_t mem[32];
-    char temp[ANEDYA_RX_BUFFER_SIZE];
-    strcpy(temp, payload);
+    char *temp = malloc(payload_len + 1);
+    if (!temp) return ANEDYA_VALUESTORE_TYPE_NONE;
+    memcpy(temp, payload, payload_len);
+    temp[payload_len] = '\0';
     // Parse the json and get the txn id
     json_t const *json = json_create(temp, mem, sizeof mem / sizeof *mem);
     if (!json)
     {
         _anedya_interface_std_out("Error while parsing JSON body: Valuestore type");
+        free(temp);
+        return ANEDYA_VALUESTORE_TYPE_NONE;
     }
     json_t const *type = json_getProperty(json, "type");
     if (!type || JSON_TEXT != json_getType(type))
     {
         _anedya_interface_std_out("Error, the type property is not found.");
+        free(temp);
+        return ANEDYA_VALUESTORE_TYPE_NONE;
     }
     const char *t = json_getValue(type);
 
+    uint8_t ret = ANEDYA_VALUESTORE_TYPE_NONE;
     if (strcmp(t, "float") == 0)
     {
-        return ANEDYA_VALUESTORE_TYPE_FLOAT;
+        ret = ANEDYA_VALUESTORE_TYPE_FLOAT;
     }
-
-    if (strcmp(t, "string") == 0)
+    else if (strcmp(t, "string") == 0)
     {
-        return ANEDYA_VALUESTORE_TYPE_STRING;
+        ret = ANEDYA_VALUESTORE_TYPE_STRING;
     }
-
-    if (strcmp(t, "binary") == 0)
+    else if (strcmp(t, "binary") == 0)
     {
-        return ANEDYA_VALUESTORE_TYPE_BIN;
+        ret = ANEDYA_VALUESTORE_TYPE_BIN;
     }
-
-    if (strcmp(t, "boolean") == 0)
+    else if (strcmp(t, "boolean") == 0)
     {
-        return ANEDYA_VALUESTORE_TYPE_BOOL;
+        ret = ANEDYA_VALUESTORE_TYPE_BOOL;
     }
-    return ANEDYA_VALUESTORE_TYPE_NONE;
+    free(temp);
+    return ret;
 }
 
 anedya_err_t _anedya_parse_valuestore_float(char *payload, size_t payload_len, anedya_valuestore_obj_float_t *obj)
