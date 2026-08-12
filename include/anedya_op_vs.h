@@ -38,7 +38,7 @@ typedef struct
 {
     anedya_valuestore_ns_t ns;
     char key[50];
-    char *value;
+    const char *value;
     size_t value_len;
     int64_t modified;
 } anedya_valuestore_obj_string_t;
